@@ -1,0 +1,166 @@
+---
+/**
+ * Diagram 4 — research, plan, code, verify, drawn as a loop.
+ *
+ * The four stages run left to right because that is the order you walk them
+ * the first time. What makes it a loop rather than a line is the two return
+ * arcs underneath, and those are the only labelled edges in the drawing:
+ * verifying almost always sends you back to the code, and sometimes all the
+ * way back to the plan. The short arc carries the accent because it is the
+ * one you travel most.
+ *
+ * Theming and sizing: see StackDiagram.astro. Ids are prefixed `bl-`.
+ */
+---
+
+<figure class="qu-diagram">
+	<svg
+		viewBox="0 0 440 156"
+		role="img"
+		aria-labelledby="bl-title bl-desc"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<title id="bl-title">Research, plan, code, verify — drawn as a loop, not a line</title>
+		<desc id="bl-desc">
+			Four boxes in a row, joined left to right by arrows: Research, then Plan,
+			then Code, then Verify. Two arcs run back underneath from Verify. The
+			first and shorter arc, highlighted, returns to Code and is labelled fix
+			and re-verify. The second and longer arc returns all the way to Plan and
+			is labelled back to the plan, if the plan was wrong.
+		</desc>
+
+		<defs>
+			<marker
+				id="bl-arrow"
+				markerWidth="9"
+				markerHeight="7"
+				refX="8"
+				refY="3.5"
+				orient="auto"
+				markerUnits="userSpaceOnUse"
+			>
+				<path class="head" d="M0 0 L9 3.5 L0 7 Z" />
+			</marker>
+			<marker
+				id="bl-arrow-accent"
+				markerWidth="9"
+				markerHeight="7"
+				refX="8"
+				refY="3.5"
+				orient="auto"
+				markerUnits="userSpaceOnUse"
+			>
+				<path class="head-accent" d="M0 0 L9 3.5 L0 7 Z" />
+			</marker>
+		</defs>
+
+		<rect class="box" x="3" y="26" width="89" height="40" rx="8" />
+		<text class="name mid" x="47.5" y="51">Research</text>
+
+		<rect class="box" x="118" y="26" width="89" height="40" rx="8" />
+		<text class="name mid" x="162.5" y="51">Plan</text>
+
+		<rect class="box" x="233" y="26" width="89" height="40" rx="8" />
+		<text class="name mid" x="277.5" y="51">Code</text>
+
+		<rect class="box" x="348" y="26" width="89" height="40" rx="8" />
+		<text class="name mid" x="392.5" y="51">Verify</text>
+
+		<line class="flow" x1="92" y1="46" x2="114" y2="46" marker-end="url(#bl-arrow)" />
+		<line class="flow" x1="207" y1="46" x2="229" y2="46" marker-end="url(#bl-arrow)" />
+		<line class="flow" x1="322" y1="46" x2="344" y2="46" marker-end="url(#bl-arrow)" />
+
+		<path
+			class="flow accent"
+			d="M392.5 68 L392.5 98 Q392.5 104 386.5 104 L283.5 104 Q277.5 104 277.5 98 L277.5 72"
+			marker-end="url(#bl-arrow-accent)"
+		/>
+		<text class="step mid lead" x="335" y="92">fix and re-verify</text>
+
+		<path
+			class="flow"
+			d="M415 68 L415 134 Q415 140 409 140 L168.5 140 Q162.5 140 162.5 134 L162.5 72"
+			marker-end="url(#bl-arrow)"
+		/>
+		<text class="step mid" x="289" y="130">back to the plan, if the plan was wrong</text>
+	</svg>
+	<figcaption>
+		The arrows that matter are the ones pointing backwards. Nothing here is
+		specific to AI — it is the loop every working engineer already runs.
+	</figcaption>
+</figure>
+
+<style>
+	.qu-diagram {
+		margin: 2rem 0;
+	}
+
+	.qu-diagram svg {
+		display: block;
+		width: 100%;
+		max-width: 27.5rem;
+		height: auto;
+		margin-inline: auto;
+		font-family: var(--sl-font);
+	}
+
+	.qu-diagram figcaption {
+		margin: 0.875rem auto 0;
+		max-width: 27.5rem;
+		text-align: center;
+		font-size: 0.875rem;
+		line-height: 1.5;
+		color: var(--sl-color-gray-3);
+	}
+
+	.box {
+		fill: var(--sl-color-bg-sidebar);
+		stroke: var(--sl-color-hairline);
+		stroke-width: 1;
+	}
+
+	.flow {
+		fill: none;
+		stroke: var(--sl-color-gray-3);
+		stroke-width: 1.25;
+	}
+
+	.head {
+		fill: var(--sl-color-gray-3);
+	}
+
+	/* One accented edge: the return you actually travel every time. */
+	.accent {
+		stroke: var(--sl-color-accent);
+		stroke-width: 1.5;
+	}
+
+	.head-accent {
+		fill: var(--sl-color-accent);
+	}
+
+	.name {
+		fill: var(--sl-color-white);
+		font-size: 14px;
+		font-weight: 500;
+	}
+
+	.step {
+		fill: var(--sl-color-gray-3);
+		font-size: 12px;
+	}
+
+	/*
+	 * Declared after .step so its fill wins on source order. Ink and medium
+	 * weight, not jade: accent text would read as a link, and the arc beside
+	 * it is already carrying the accent.
+	 */
+	.lead {
+		fill: var(--sl-color-white);
+		font-weight: 500;
+	}
+
+	.mid {
+		text-anchor: middle;
+	}
+</style>

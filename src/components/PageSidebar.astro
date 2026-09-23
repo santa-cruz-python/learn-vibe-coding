@@ -1,0 +1,24 @@
+---
+/**
+ * Override of @astrojs/starlight/components/PageSidebar.astro.
+ *
+ * Emmanuel doesn't want navigation split across both sides of the screen:
+ * the page's table of contents should live in the left sidebar (see the
+ * `Sidebar` override), not in Starlight's default right-hand rail. This
+ * override drops the desktop `lg:` panel entirely.
+ *
+ * `MobileTableOfContents` is kept deliberately: below the `md:` breakpoint
+ * the left sidebar itself is collapsed behind the hamburger menu, so without
+ * this fixed bar there would be no in-page navigation visible at all until a
+ * reader opens that menu.
+ */
+import MobileTableOfContents from 'virtual:starlight/components/MobileTableOfContents';
+---
+
+{
+	Astro.locals.starlightRoute.toc && (
+		<div class="lg:sl-hidden">
+			<MobileTableOfContents />
+		</div>
+	)
+}

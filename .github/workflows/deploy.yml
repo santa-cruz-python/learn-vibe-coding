@@ -1,0 +1,74 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Allow only one concurrent deployment, skipping runs queued between an
+# in-progress run and the latest one.
+concurrency:
+  group: 'pages'
+  cancel-in-progress: false
+
+jobs:
+  # Build and deploy are split, and the build runs as explicit steps rather
+  # than through withastro/action, so that a failure names the command that
+  # died instead of surfacing as a bare "exit code 1".
+  build:
+    runs-on: ubuntu-latest
+    # Deliberately NOT granted pages/id-token. This job runs `npm ci`, which
+    # executes install scripts from the whole dependency tree; it must not be
+    # holding deployment credentials while it does.
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7
+        with:
+          # Keep GITHUB_TOKEN out of .git/config, where an install script
+          # running later in this job could read it. Nothing here pushes.
+          persist-credentials: false
+
+      - name: Set up Node
+        uses: actions/setup-node@v7
+        with:
+          node-version: 22
+          cache: npm
+
+      - name: Report toolchain versions
+        run: |
+          echo "node: $(node --version)"
+          echo "npm:  $(npm --version)"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build site
+        run: npm run build
+
+      - name: Confirm build output exists
+        run: |
+          test -f dist/index.html || { echo "::error::dist/index.html missing after build"; exit 1; }
+          echo "pages built: $(find dist -name '*.html' | wc -l)"
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: ./dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    # Only this job gets the deployment grants, and it runs no project code.
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

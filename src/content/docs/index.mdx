@@ -1,0 +1,31 @@
+---
+title: Learn Vibe Coding
+description: A public introduction to vibe coding.
+template: splash
+hero:
+  tagline: A field guide to building software by describing what you want, not typing every line yourself.
+  actions:
+    - text: Get Started
+      link: start-here/what-is-vibe-coding/
+      icon: right-arrow
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+<CardGrid>
+	<Card title="What is vibe coding?" icon="rocket">
+		Start here: [what vibe coding is](start-here/what-is-vibe-coding/), and why it's worth learning even if you already know how to write code.
+	</Card>
+	<Card title="Model, Agent, Harness and Loops" icon="puzzle">
+		The [handful of concepts](concepts/model-agent-harness-loops/) that make the stack click — LLMs, agents, harnesses, and the loops that keep them running without you.
+	</Card>
+	<Card title="Choosing your tools" icon="setting">
+		[Pick a harness and a model](getting-set-up/choosing-your-tools/), decide between API and subscription pricing, and find the plugins worth installing.
+	</Card>
+	<Card title="Starting a project" icon="add-document">
+		[Set your project up](building/starting-a-project/) with an AGENTS.md file, version control, and credentials handled properly, before you write a line of product code.
+	</Card>
+	<Card title="Research, plan, build, verify" icon="approve-check">
+		The loop underneath every project: [research what you're building, plan it, build it, then verify](building/research-plan-build-verify/) that it actually works.
+	</Card>
+</CardGrid>

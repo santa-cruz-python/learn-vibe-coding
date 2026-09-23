@@ -1,0 +1,78 @@
+---
+title: Model, Agent, Harness, and Loops
+description: The stack that vibe coding is built on, and how each layer builds on the one before it.
+---
+
+import StackDiagram from '../../../components/diagrams/StackDiagram.astro';
+import ToolCallCycle from '../../../components/diagrams/ToolCallCycle.astro';
+import ContextCompaction from '../../../components/diagrams/ContextCompaction.astro';
+
+here we'll describe the stack and how it builds on each previous level:
+
+<StackDiagram />
+
+## Large Language Models (LLM)
+
+OpenAI GPT, Anthropic Claude, Gemini and a multitude of open sourced models (Deepseek, Kimi, Qwen, Gemma...)
+
+Whatever the model, it's been trained to output text from a text input. Some models are 'multimodal', which means they can also understand images (and sometimes voice)
+They are the core to the system. The input of an LLM is the 'prompt'.
+
+The 'context' is what is passed as part of the prompt to help the LLM provide the best possible answer, this may include content such as documentation, existing code or other local files.
+
+The LLM converts text into tokens. A token is roughly equivalent to a word, but a word may be multiple tokens.
+
+The context 'window' is the maximum size the LLM can handle at one time, including input and output. Modern models tend to have windows in the range of 200k to 1M tokens. When the context window fills up, the harness usually compacts it rather than simply cutting it off: it summarizes the conversation so far and carries the summary forward in place of the full history. Nothing disappears outright, but detail does, and an agent that has compacted a few times can forget things you told it early on.
+
+<ContextCompaction />
+
+:::note[Resource Links]
+- Anthropic (Claude): https://www.anthropic.com
+- OpenAI (GPT): https://openai.com
+- Google (Gemini): https://ai.google.dev
+- Open weights: DeepSeek https://www.deepseek.com, Qwen https://qwen.ai, Kimi https://www.moonshot.ai
+:::
+
+## Agent
+
+An Agent is a unit that makes calls to LLMs. An agent usually has instructions (System prompt, user prompt) and may have access to tools. Tools definitions are part of the prompt: the LLM generally does not run the tools; it decides if it needs to run a tool to perform a task, and provides a structured output to tell the client what tool to call with what parameters. The agent calling the LLM then can run the tool, and provide the output of the tool to the next turn of the conversation for the LLM to evaluate.
+
+<ToolCallCycle />
+
+So an agent calls a model with instructions, gathers the output, and decides what to do next.
+
+### Tools
+
+There are lots of tools an agent may need to code: starting with searching and reading through the existing code to understand what is there, researching documentation for the modules used in the code base, looking up function signatures etc... and then writing the code itself, whether creating new files or editing existing files. Write tests, run the test suite to validate functionalities, search files, create folders, run local tools like linting, formatting, type checking, or run a local version of the program itself and even visualize the output in a browser for example.
+
+## Harness
+
+The harness is the software that manages the agent(s): it is the tool the developer uses to converse with the AI agent(s), and passes the context to the agent (prompt, tool definitions, skills etc...) for the agent to use. The harness ensures the agents keep working on the task described by the user, and goes through specific steps to organize that work (like planning, creating a task list, dividing the work among agents if needed, gather outputs, update the task list as progress is made, and continue)
+
+Harnesses include tool definitions for tools needed for development (read folder, files, search, grep, write file, run shell commands etc...)
+
+### AGENTS.md and CLAUDE.md files
+
+These files contain custom instructions for the harness, to set your preferences globally or for a specific project. Most harnesses look for AGENTS.md; Claude Code looks for CLAUDE.md.
+
+Since version 2.1.277 (September 2026), Claude Code will also read AGENTS.md, but only as a fallback: it looks for CLAUDE.md first, and reads AGENTS.md only when there is no CLAUDE.md. The two are never merged. If both files exist, CLAUDE.md wins and your AGENTS.md is ignored entirely. The fallback is also still behind a feature flag (check `/config`, under "Project instructions"), and it is not available on Bedrock, Vertex or Foundry.
+
+So to be compatible with any harness, standardize on a single AGENTS.md, and make sure you don't leave a CLAUDE.md sitting next to it. A leftover CLAUDE.md takes precedence silently, and you will be editing an AGENTS.md that nothing ever reads.
+
+### Skills
+
+Skills are packaged, reusable sets of instructions that the harness loads on demand, for one particular kind of task: reviewing a pull request, writing a commit message, debugging a failing test, building a release. Rather than re-explaining the same workflow every session, you write it down once as a skill and the harness pulls it into the context when the task matches, and leaves it out when it doesn't, so it costs you nothing the rest of the time.
+
+Skills can be your own, shared with your team, or installed from someone else's plugin. They are the difference between telling the AI how you like things done and having it already know.
+
+### Hooks
+
+Hooks are automation the harness runs for you when something happens: before or after a tool call, when a session starts, when the agent stops. A hook is a command, not a prompt. The harness executes it directly and the model gets no say in whether it runs, which is precisely what makes hooks useful. An instruction in your AGENTS.md is a request the model usually honors; a hook always fires.
+
+So use hooks for the rules you actually need enforced rather than merely suggested: run the formatter after every file edit, run the type checker before the agent is allowed to call itself done, block writes to files that should never be touched, or simply play a sound when the agent needs your attention.
+
+## Loops
+
+A loop is what turns a conversation into work that runs without you. You give the agent a goal and a condition that tells it when to stop, and the harness keeps feeding the agent back to itself: it acts, it looks at the result, it decides what is next, and it goes again, until the goal is met or a limit is hit (a number of iterations, a token budget, a timer).
+
+This is the level at which the AI stops being a very fast autocomplete and becomes something you can delegate to, and it is also where the most money and time get wasted. A loop is only as good as its termination condition. If the condition is vague ("keep going until the app is good") or is something the agent cannot check for itself, it has no way of knowing it is finished, so it doesn't finish: it keeps rewriting working code, inventing problems to solve, and spending your tokens. Give the loop something it can objectively pass or fail, like a test suite that has to go green or a command that has to exit cleanly, and you can leave it running. Don't, and you come back to a mess.

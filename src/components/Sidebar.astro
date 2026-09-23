@@ -1,0 +1,97 @@
+---
+/**
+ * Override of @astrojs/starlight/components/Sidebar.astro.
+ *
+ * Renders the site nav exactly as Starlight's default does (by importing
+ * and reusing the default component directly — see "Reusing a default
+ * component" in Starlight's override docs), then the current page's table
+ * of contents beneath it, so all navigation lives in one column on the
+ * left instead of being split across both sides of the screen.
+ *
+ * Layout choice — separate block, not nested under the active nav entry:
+ * the ideal would nest the TOC under the current page's own <li> in the
+ * nav tree, but doing that means reaching into `SidebarSublist`, which is
+ * NOT part of Starlight's overridable-components schema (unlike Sidebar,
+ * PageSidebar, TableOfContents and TwoColumnContent, which are). Its
+ * Props and markup are an internal implementation detail Starlight is
+ * free to change without treating it as a breaking change, so importing
+ * it from `@astrojs/starlight/components/SidebarSublist.astro` would be
+ * fragile even though the package's `./components/*` export map happens
+ * to expose the file today. This clearly-separated "On this page" block
+ * is the robust version; it survives a Starlight upgrade that the nested
+ * version might not.
+ *
+ * Critically, this reuses Starlight's own `TableOfContents` component
+ * rather than hand-rolling a heading list from `starlightRoute.toc`: that
+ * component's `<starlight-toc>` custom element is what drives scroll-spy
+ * (highlighting the heading currently in view). A hand-rolled list would
+ * silently lose that.
+ */
+import Default from '@astrojs/starlight/components/Sidebar.astro';
+import TableOfContents from 'virtual:starlight/components/TableOfContents';
+
+const { toc } = Astro.locals.starlightRoute;
+---
+
+<Default />
+
+{
+	toc && (
+		<div class="sidebar-toc">
+			<TableOfContents />
+		</div>
+	)
+}
+
+<style>
+	@layer starlight.core {
+		.sidebar-toc {
+			border-top: 1px solid var(--sl-color-hairline);
+			padding-top: 1rem;
+		}
+
+		/*
+		 * Match the type scale the right-hand rail used to have
+		 * (Starlight's default PageSidebar sized its heading at
+		 * --sl-text-h5 and its links at --sl-text-xs), but read as
+		 * subordinate to the nav list above via size and weight only —
+		 * never color, per Quiet Utility's "structure carried by
+		 * borders and spacing rather than color or shadow."
+		 */
+		.sidebar-toc :global(h2) {
+			margin-bottom: 0.5rem;
+			padding-inline: 0.5rem;
+			color: var(--sl-color-gray-3);
+			font-size: var(--sl-text-xs);
+			font-weight: 600;
+			text-transform: uppercase;
+			letter-spacing: 0.03em;
+			line-height: var(--sl-line-height-headings);
+		}
+
+		.sidebar-toc :global(a) {
+			font-size: var(--sl-text-xs);
+			color: var(--sl-color-gray-3);
+			text-decoration: none;
+		}
+
+		.sidebar-toc :global(a:hover),
+		.sidebar-toc :global(a:focus) {
+			color: var(--sl-color-white);
+		}
+
+		/*
+		 * The currently-read heading: Starlight's own TableOfContentsList
+		 * already sets this via `a[aria-current='true']`, but that rule
+		 * loses to the flat `.sidebar-toc a` color above on specificity
+		 * ties, so it's restated here. Accent color is fine for this one
+		 * signal — it's the same "you are here" role the accent-filled
+		 * pill already plays for the active page in the nav above, not a
+		 * category color being reintroduced.
+		 */
+		.sidebar-toc :global(a[aria-current='true']) {
+			color: var(--sl-color-text-accent);
+			font-weight: 600;
+		}
+	}
+</style>

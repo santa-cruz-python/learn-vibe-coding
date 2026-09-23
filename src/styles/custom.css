@@ -1,0 +1,154 @@
+/**
+ * Maps Quiet Utility tokens (src/styles/quiet-utility.css) onto Starlight's
+ * `--sl-*` custom properties, per the mapping table in the design spec
+ * (docs/superpowers/specs/2026-09-23-vibe-coding-site-design.md in the
+ * workspace repo). Also restyles the three aside types used on this site.
+ *
+ * Fonts are self-hosted (no Google Fonts CDN) via @fontsource-variable.
+ */
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+/*
+ * The full Quiet Utility mapping, both schemes at once. This block is
+ * deliberately scheme-unconditional: `--qu-color-*` (src/styles/
+ * quiet-utility.css) already resolves to the right light or dark value for
+ * whatever `data-theme` Starlight has set (or the OS preference, absent an
+ * explicit choice), so this file doesn't need to duplicate that switching
+ * logic — it just wires the roles through.
+ *
+ * | Quiet Utility    | Starlight property                              |
+ * | ---------------- | ------------------------------------------------ |
+ * | primary          | --sl-color-text, --sl-color-white (headings)      |
+ * | secondary        | --sl-color-gray-3 (muted text)                    |
+ * | accent           | --sl-color-accent, --sl-color-text-accent         |
+ * | accent-subtle    | --sl-color-accent-low                             |
+ * | surface          | --sl-color-bg                                     |
+ * | surface-subtle   | --sl-color-bg-sidebar, --sl-color-bg-nav          |
+ * | border           | --sl-color-hairline, --sl-color-hairline-shade    |
+ *
+ * `border-strong` (the 13th role, added alongside the dark palette) has no
+ * entry here: nothing this site themes outlines an interactive control
+ * (see the note on the asides below), so Starlight's own control borders
+ * — its search input, theme/language `<select>`s — are the one thing left
+ * unmapped. Quiet Utility doesn't publish a value for those beyond `border`
+ * / `border-strong`, and `border-strong` isn't warranted for anything here,
+ * so they're left at Starlight's defaults rather than guessing.
+ *
+ * `--sl-color-accent-high` is also mapped, one row down from the table
+ * above: it's not one of the eight properties in the spec's mapping, but
+ * Starlight uses it as a second, "high contrast" accent slot (the search
+ * result hover/focus outline, the default `<Badge>` fill, Expressive
+ * Code's dark-mode active tab border) that defaults to a blue distinct
+ * from `--sl-color-accent`. Quiet Utility has exactly one accent role, not
+ * two, so this reuses `--qu-color-accent` rather than inventing a second
+ * shade — the alternative was leaving those spots blue, which is the
+ * mismatch this task asked to hunt down.
+ */
+:root {
+	/* Fonts apply in both color schemes. */
+	--sl-font: var(--qu-font-body);
+	--sl-font-mono: var(--qu-font-mono);
+
+	--sl-color-text: var(--qu-color-primary);
+	--sl-color-white: var(--qu-color-primary);
+	--sl-color-gray-3: var(--qu-color-secondary);
+	--sl-color-accent: var(--qu-color-accent);
+	--sl-color-accent-high: var(--qu-color-accent);
+	--sl-color-text-accent: var(--qu-color-accent);
+	--sl-color-accent-low: var(--qu-color-accent-subtle);
+	--sl-color-bg: var(--qu-color-surface);
+	--sl-color-bg-sidebar: var(--qu-color-surface-subtle);
+	--sl-color-bg-nav: var(--qu-color-surface-subtle);
+	--sl-color-hairline: var(--qu-color-border);
+	--sl-color-hairline-shade: var(--qu-color-border);
+}
+
+/*
+ * ---------------------------------------------------------------------
+ * Search box focus ring. Starlight themes the Pagefind search input's
+ * `border` on focus (via `--pagefind-ui-border`) but never sets its own
+ * `outline`, so the browser's native focus-visible ring — blue by default
+ * in Chromium — was showing through around it, the one spot found where
+ * "blue vs. jade" wasn't actually a Starlight-variable problem at all.
+ * Quiet Utility's `focus-ring` is defined as 2px `accent`, offset 2px,
+ * "never removed" — applied here verbatim instead of leaving the UA
+ * default in place.
+ * ---------------------------------------------------------------------
+ */
+#starlight__search .pagefind-ui__search-input:focus-visible {
+	outline: 2px solid var(--sl-color-accent);
+	outline-offset: 2px;
+}
+
+/*
+ * ---------------------------------------------------------------------
+ * Asides — restyled toward Quiet Utility's philosophy: "structure carried
+ * by borders and spacing rather than color or shadow." Starlight's default
+ * asides are filled, per-type colored alert boxes (blue/purple/orange/red
+ * backgrounds). Quiet Utility has no semantic status colors beyond a single
+ * reserved `danger` red for destructive actions, none of which apply to
+ * informational asides, so all variants get the same neutral, framed
+ * treatment: a hairline border, a subtle surface wash (the same "recessed
+ * panel" relationship Quiet Utility uses for cards-on-page), generous
+ * padding, and ink-colored text. They're distinguished from each other by
+ * their icon and title text only, never by color.
+ *
+ * `border` vs `border-strong`: an aside is not an interactive control — it
+ * has no click target and isn't a form element — so per Quiet Utility's
+ * rule ("`border` for decorative rules, dividers and card outlines;
+ * `border-strong` for anything that outlines an interactive control") it
+ * gets the same treatment as `card` in DESIGN.md, which is explicitly
+ * `border`, not `border-strong`. Nothing here changed when `border-strong`
+ * was added.
+ * ---------------------------------------------------------------------
+ */
+.starlight-aside {
+	border: 1px solid var(--sl-color-hairline);
+	border-radius: 0.5rem; /* Quiet Utility --radius-md (8px) */
+	background-color: var(--sl-color-bg-sidebar);
+	padding: 1rem 1.25rem;
+}
+
+.starlight-aside--note,
+.starlight-aside--tip,
+.starlight-aside--caution,
+.starlight-aside--danger {
+	--sl-color-asides-text-accent: var(--sl-color-white);
+	--sl-color-asides-border: var(--sl-color-hairline);
+}
+
+.starlight-aside__title {
+	font-weight: 500; /* Quiet Utility "label" weight, not a heavier alert weight */
+	text-transform: none;
+	letter-spacing: 0;
+}
+
+.starlight-aside__icon {
+	color: var(--sl-color-gray-3);
+}
+
+.starlight-aside__content a {
+	color: var(--sl-color-text-accent);
+}
+
+/*
+ * ---------------------------------------------------------------------
+ * Landing-page card icons — same "structure carried by borders and
+ * spacing rather than color or shadow" rule as the asides above.
+ * Starlight's default <Card> gives its icon a pastel chip whose border
+ * and background cycle through purple/orange/green/red/blue per card
+ * (`--sl-card-border` / `--sl-card-bg`, set per `:nth-child` in
+ * @astrojs/starlight/user-components/Card.astro). That's the first thing
+ * a visitor to this site sees, and it's exactly the kind of color-coding
+ * Quiet Utility avoids. Overriding the chip's actual border/background
+ * (rather than the five `--sl-card-*` custom properties that feed it)
+ * neutralizes every card in one rule regardless of position. The icon
+ * glyph itself is untouched — it's still `currentColor` (ink) — so cards
+ * stay distinguished by icon shape, not hue.
+ * ---------------------------------------------------------------------
+ */
+.card .icon {
+	border-color: var(--sl-color-hairline);
+	background-color: var(--sl-color-bg-sidebar);
+}

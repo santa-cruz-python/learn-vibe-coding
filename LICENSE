@@ -1,0 +1,44 @@
+Copyright (c) 2026 Emmanuel Leroy. All rights reserved.
+
+This repository and its contents — including the written content, diagrams,
+design, source code, and configuration — are the copyrighted work of
+Emmanuel Leroy.
+
+No permission is granted to copy, reproduce, modify, adapt, translate,
+publish, distribute, display, or create derivative works from any part of
+this repository, in whole or in part, by any means or in any medium, except
+as expressly permitted in writing by the copyright holder.
+
+Viewing this repository on GitHub, and any forking permitted by GitHub's
+Terms of Service as an inherent function of that platform, does not grant
+any further rights.
+
+Brief quotation for the purpose of review, commentary, criticism, news
+reporting, teaching, or scholarship may be permitted under the fair use
+doctrine of applicable copyright law. Nothing in this notice is intended to
+restrict rights that cannot be restricted by license.
+
+TO REQUEST PERMISSION
+
+To request permission for any use beyond the above — including reproducing
+the material, translating it, using it in a course or workshop, or building
+on it — open an issue on this repository describing the intended use, or
+contact the copyright holder directly.
+
+Permission is often granted for non-commercial educational use. Please ask.
+
+THIRD-PARTY COMPONENTS
+
+This project depends on third-party open-source software, including Astro
+and Starlight, which remain subject to their own licenses. Those licenses
+are unaffected by this notice, and this notice makes no claim over them.
+Installed dependencies are not distributed in this repository; see
+package.json and the respective projects for their terms.
+
+NO WARRANTY
+
+This material is provided "as is", without warranty of any kind, express or
+implied, including but not limited to the warranties of merchantability,
+fitness for a particular purpose, and noninfringement. In no event shall the
+copyright holder be liable for any claim, damages, or other liability
+arising from, out of, or in connection with the material or its use.

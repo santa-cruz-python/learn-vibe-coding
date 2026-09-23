@@ -1,0 +1,191 @@
+---
+/**
+ * Diagram 2 — the tool-calling cycle.
+ *
+ * The one point this drawing exists to make: the *harness* executes the
+ * tool, never the model. That is why the layout is a hub (harness) with two
+ * satellites (model, tool) rather than a left-to-right pipeline — in a
+ * pipeline the tool would sit downstream of the model, which is exactly the
+ * wrong reading. Here the Model box has no edge to the Tool box at all; the
+ * only line that reaches the tool starts at the harness, and it is the one
+ * element in the diagram drawn in the jade accent.
+ *
+ * Theming and sizing: see StackDiagram.astro. Ids are prefixed `tc-` so they
+ * cannot collide with the other two diagrams sharing this page.
+ */
+---
+
+<figure class="qu-diagram">
+	<svg
+		viewBox="0 0 440 368"
+		role="img"
+		aria-labelledby="tc-title tc-desc"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<title id="tc-title">The tool-calling cycle: the harness runs the tool, not the model</title>
+		<desc id="tc-desc">
+			The harness sits at the center, with the model above it and a tool below
+			it. Step one: the harness sends the model the prompt plus every tool
+			definition, and each tool result on later turns. Step two: the model
+			replies with text, or with a structured request to call a tool. Step
+			three, highlighted: the harness runs the tool — the model cannot. Step
+			four: the result goes back to the harness, which sends it to the model as
+			the next turn, and the cycle repeats. The model and the tool are never
+			connected to each other.
+		</desc>
+
+		<defs>
+			<marker
+				id="tc-arrow"
+				markerWidth="9"
+				markerHeight="7"
+				refX="8"
+				refY="3.5"
+				orient="auto"
+				markerUnits="userSpaceOnUse"
+			>
+				<path class="head" d="M0 0 L9 3.5 L0 7 Z" />
+			</marker>
+			<marker
+				id="tc-arrow-accent"
+				markerWidth="9"
+				markerHeight="7"
+				refX="8"
+				refY="3.5"
+				orient="auto"
+				markerUnits="userSpaceOnUse"
+			>
+				<path class="head-accent" d="M0 0 L9 3.5 L0 7 Z" />
+			</marker>
+		</defs>
+
+		<rect class="box" x="158" y="14" width="124" height="56" rx="8" />
+		<text class="name mid" x="220" y="40">Model</text>
+		<text class="role mid" x="220" y="58">asks, never runs</text>
+
+		<rect class="box hub" x="144" y="152" width="152" height="64" rx="8" />
+		<text class="name mid" x="220" y="180">Harness</text>
+		<text class="role mid" x="220" y="198">the software you run</text>
+
+		<rect class="box" x="158" y="298" width="124" height="56" rx="8" />
+		<text class="name mid" x="220" y="324">Tool</text>
+		<text class="role mid" x="220" y="342">read, edit, test</text>
+
+		<line class="flow" x1="196" y1="146" x2="196" y2="78" marker-end="url(#tc-arrow)" />
+		<text class="step end" x="134" y="96">1 · the prompt, plus</text>
+		<text class="step end" x="134" y="112">every tool definition</text>
+		<text class="role end" x="134" y="128">(and each tool result)</text>
+
+		<line class="flow" x1="244" y1="74" x2="244" y2="146" marker-end="url(#tc-arrow)" />
+		<text class="step start" x="306" y="102">2 · text, or a request</text>
+		<text class="step start" x="306" y="118">to call a tool</text>
+
+		<line class="flow accent" x1="196" y1="220" x2="196" y2="292" marker-end="url(#tc-arrow-accent)" />
+		<text class="step end lead" x="134" y="240">3 · the harness</text>
+		<text class="step end lead" x="134" y="256">runs the tool</text>
+		<text class="role end" x="134" y="272">the model cannot</text>
+
+		<line class="flow" x1="244" y1="294" x2="244" y2="222" marker-end="url(#tc-arrow)" />
+		<text class="step start" x="306" y="250">4 · the result goes</text>
+		<text class="step start" x="306" y="266">back to the harness</text>
+	</svg>
+	<figcaption>
+		Step 4 feeds step 1 again, which is what makes it a loop. It stops when
+		the model answers with plain text instead of another tool request.
+	</figcaption>
+</figure>
+
+<style>
+	.qu-diagram {
+		margin: 2rem 0;
+	}
+
+	.qu-diagram svg {
+		display: block;
+		width: 100%;
+		max-width: 27.5rem;
+		height: auto;
+		margin-inline: auto;
+		font-family: var(--sl-font);
+	}
+
+	.qu-diagram figcaption {
+		margin: 0.875rem auto 0;
+		max-width: 27.5rem;
+		text-align: center;
+		font-size: 0.875rem;
+		line-height: 1.5;
+		color: var(--sl-color-gray-3);
+	}
+
+	.box {
+		fill: none;
+		stroke: var(--sl-color-hairline);
+		stroke-width: 1;
+	}
+
+	/* The hub gets the aside's surface tint so the eye lands on it first. */
+	.hub {
+		fill: var(--sl-color-bg-sidebar);
+	}
+
+	.flow {
+		stroke: var(--sl-color-gray-3);
+		stroke-width: 1.25;
+		fill: none;
+	}
+
+	.head {
+		fill: var(--sl-color-gray-3);
+	}
+
+	/*
+	 * The only accented mark in the diagram, on the only claim readers get
+	 * wrong: this arrow starts at the harness, not the model.
+	 */
+	.accent {
+		stroke: var(--sl-color-accent);
+		stroke-width: 1.5;
+	}
+
+	.head-accent {
+		fill: var(--sl-color-accent);
+	}
+
+	/*
+	 * Weight, not colour: the jade is spent on the arrow itself. Accent-
+	 * coloured text inside the drawing would read as a link, since that is
+	 * what accent text means everywhere else on the site.
+	 */
+	.lead {
+		font-weight: 500;
+	}
+
+	.name {
+		fill: var(--sl-color-white);
+		font-size: 14px;
+		font-weight: 500;
+	}
+
+	.step {
+		fill: var(--sl-color-white);
+		font-size: 12px;
+	}
+
+	.role {
+		fill: var(--sl-color-gray-3);
+		font-size: 11.5px;
+	}
+
+	.mid {
+		text-anchor: middle;
+	}
+
+	.start {
+		text-anchor: start;
+	}
+
+	.end {
+		text-anchor: end;
+	}
+</style>

@@ -1,0 +1,144 @@
+/**
+ * Quiet Utility — vendored design tokens
+ *
+ * Source: `design/theme.css` in the `claude` workspace repo (the Quiet
+ * Utility design system, not this site's repo), copied 2026-09-23,
+ * re-copied 2026-09-23 for the dark palette added in commit `adab9e5`.
+ *
+ * This is a hand-copied snapshot, not a build-time import. The site repo is
+ * checked out alone by GitHub Actions, so it cannot reach across into the
+ * workspace repo at build time. See the project's CLAUDE.md for the
+ * token-sync obligation this creates: whoever changes `design/theme.css`
+ * does NOT automatically update this file. Re-copy by hand when Quiet
+ * Utility's values change, and update the date above when you do.
+ *
+ * Values below are renamed from theme.css's Tailwind `@theme` block into
+ * plain custom properties (`--qu-*`) since this project does not use
+ * Tailwind (see design spec, "No Tailwind"). `src/styles/custom.css` maps
+ * these onto Starlight's `--sl-*` properties.
+ *
+ * Color scheme switching mirrors `design/theme.css` exactly: thirteen
+ * color roles, each with a light and a dark value carried on the SAME
+ * `--qu-color-*` custom property (not a separate `-dark` property), so
+ * anything downstream (custom.css) can reference `--qu-color-primary`
+ * unconditionally and get the right value for whichever scheme is active.
+ * Non-color tokens (type, radius, spacing) don't vary by scheme, so they're
+ * declared once.
+ *
+ *   no `data-theme`, OS prefers dark  -> dark (see the @media block)
+ *   no `data-theme`, OS prefers light -> light (the :root baseline)
+ *   data-theme="dark"                 -> dark, whatever the OS says
+ *   data-theme="light"                -> light, whatever the OS says
+ *
+ * `data-theme` is the same attribute Starlight itself sets on <html> when a
+ * reader uses the theme toggle, so this stays in sync with Starlight's
+ * switch automatically — nothing here needs to duplicate that logic.
+ */
+
+:root {
+	/* Colors — light (the baseline / default scheme) */
+	--qu-color-primary: #1c1a16;
+	--qu-color-primary-hover: #302c25;
+	--qu-color-on-primary: #ffffff;
+	--qu-color-secondary: #6b6459;
+	--qu-color-accent: #0a7355;
+	--qu-color-accent-subtle: #e2f1eb;
+	--qu-color-on-accent: #ffffff;
+	--qu-color-surface: #ffffff;
+	--qu-color-surface-subtle: #f6f4f0;
+	--qu-color-border: #e5e0d7;
+	--qu-color-border-strong: #8c857a;
+	--qu-color-danger: #b0361c;
+	--qu-color-on-danger: #ffffff;
+
+	/* Typography */
+	--qu-font-display: 'Geist Variable', 'Geist', sans-serif;
+	--qu-font-body: 'Geist Variable', 'Geist', sans-serif;
+	--qu-font-mono: 'Geist Mono Variable', 'Geist Mono', monospace;
+
+	--qu-text-display: 3rem;
+	--qu-text-h1: 2rem;
+	--qu-text-h2: 1.5rem;
+	--qu-text-h3: 1.125rem;
+	--qu-text-body-md: 0.9375rem;
+	--qu-text-body-sm: 0.8125rem;
+	--qu-text-label: 0.8125rem;
+	--qu-text-numeric: 0.8125rem;
+
+	--qu-tracking-display: -0.03em;
+	--qu-tracking-h1: -0.022em;
+	--qu-tracking-h2: -0.016em;
+	--qu-tracking-h3: -0.01em;
+	--qu-tracking-body-md: 0em;
+	--qu-tracking-body-sm: 0em;
+	--qu-tracking-label: 0em;
+	--qu-tracking-numeric: 0em;
+
+	--qu-weight-display: 600;
+	--qu-weight-h1: 600;
+	--qu-weight-h2: 600;
+	--qu-weight-h3: 600;
+	--qu-weight-body-md: 400;
+	--qu-weight-body-sm: 400;
+	--qu-weight-label: 500;
+	--qu-weight-numeric: 400;
+
+	/* Radius */
+	--qu-radius-none: 0px;
+	--qu-radius-sm: 4px;
+	--qu-radius-md: 8px;
+	--qu-radius-lg: 12px;
+	--qu-radius-full: 999px;
+
+	/* Spacing (4px grid) */
+	--qu-spacing-xs: 4px;
+	--qu-spacing-sm: 8px;
+	--qu-spacing-md: 16px;
+	--qu-spacing-lg: 24px;
+	--qu-spacing-xl: 40px;
+	--qu-spacing-xxl: 64px;
+}
+
+/*
+ * Dark scheme. Values are stated twice — once for the OS-preference path,
+ * once for the explicit-toggle path — because CSS cannot share one
+ * declaration block between a media query and a plain selector. This is
+ * the same duplication `design/theme.css` itself has, and the same
+ * assertion (`scripts/check-views.mjs` upstream) that both stay identical
+ * applies here by hand: if you edit one of these two blocks, edit the
+ * other to match.
+ */
+
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme='light']) {
+		--qu-color-primary: #ede9e1;
+		--qu-color-primary-hover: #d8d3c9;
+		--qu-color-on-primary: #14120d;
+		--qu-color-secondary: #a29a8d;
+		--qu-color-accent: #43bb95;
+		--qu-color-accent-subtle: #1a4034;
+		--qu-color-on-accent: #14120d;
+		--qu-color-surface: #23201a;
+		--qu-color-surface-subtle: #1a1813;
+		--qu-color-border: #3a3529;
+		--qu-color-border-strong: #767061;
+		--qu-color-danger: #e4795f;
+		--qu-color-on-danger: #14120d;
+	}
+}
+
+:root[data-theme='dark'] {
+	--qu-color-primary: #ede9e1;
+	--qu-color-primary-hover: #d8d3c9;
+	--qu-color-on-primary: #14120d;
+	--qu-color-secondary: #a29a8d;
+	--qu-color-accent: #43bb95;
+	--qu-color-accent-subtle: #1a4034;
+	--qu-color-on-accent: #14120d;
+	--qu-color-surface: #23201a;
+	--qu-color-surface-subtle: #1a1813;
+	--qu-color-border: #3a3529;
+	--qu-color-border-strong: #767061;
+	--qu-color-danger: #e4795f;
+	--qu-color-on-danger: #14120d;
+}

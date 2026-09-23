@@ -1,0 +1,111 @@
+---
+/**
+ * Diagram 1 — the stack, drawn as containment rather than flow.
+ *
+ * The concepts page argues that each layer *uses* the one inside it, so the
+ * picture is four nested rectangles, not four boxes with arrows: an arrow
+ * would imply a hand-off in one direction, which is the wrong mental model.
+ *
+ * Theming: every colour comes from a `--sl-color-*` custom property (mapped
+ * from Quiet Utility in src/styles/custom.css), so the diagram follows the
+ * light/dark toggle with no per-scheme rules of its own. No literal hex.
+ *
+ * Sizing: authored at 440 user units wide and capped at 27.5rem, so the SVG
+ * never scales *up* past its authored size. At a 390px viewport the content
+ * column is 358px, i.e. a 0.81 scale, which keeps the 14px layer names at
+ * ~11px and the 12px role lines at ~10px on a phone.
+ */
+---
+
+<figure class="qu-diagram">
+	<svg
+		viewBox="0 0 440 278"
+		role="img"
+		aria-labelledby="stack-title stack-desc"
+		xmlns="http://www.w3.org/2000/svg"
+	>
+		<title id="stack-title">The vibe coding stack, drawn as four nested layers</title>
+		<desc id="stack-desc">
+			Four nested rounded rectangles. The outermost is Loops, which keeps the
+			harness working until a goal is met. Inside it sits the Harness, which
+			manages the agents and holds the context and tools. Inside that sits the
+			Agent, which calls the model and runs the tools it asks for. Innermost,
+			highlighted, sits the Model, which turns a prompt into text. Each layer
+			uses the one nested inside it.
+		</desc>
+
+		<rect class="layer" x="6" y="6" width="428" height="266" rx="10" />
+		<rect class="layer" x="28" y="52" width="384" height="198" rx="10" />
+		<rect class="layer" x="50" y="98" width="340" height="130" rx="10" />
+		<rect class="layer core" x="72" y="144" width="296" height="62" rx="10" />
+
+		<text class="name" x="26" y="30">Loops</text>
+		<text class="role" x="26" y="46">keeps the harness working until a goal is met</text>
+
+		<text class="name" x="48" y="76">Harness</text>
+		<text class="role" x="48" y="92">manages the agents, holds the context and tools</text>
+
+		<text class="name" x="70" y="122">Agent</text>
+		<text class="role" x="70" y="138">calls the model and runs the tools it asks for</text>
+
+		<text class="name" x="92" y="168">Model</text>
+		<text class="role" x="92" y="184">turns a prompt into text</text>
+	</svg>
+	<figcaption>
+		Each layer uses the one inside it. The model sits at the center and does
+		one thing; everything around it is scaffolding that decides what to send
+		it and what to do with the answer.
+	</figcaption>
+</figure>
+
+<style>
+	.qu-diagram {
+		margin: 2rem 0;
+	}
+
+	.qu-diagram svg {
+		display: block;
+		width: 100%;
+		max-width: 27.5rem;
+		height: auto;
+		margin-inline: auto;
+		font-family: var(--sl-font);
+	}
+
+	.qu-diagram figcaption {
+		margin: 0.875rem auto 0;
+		max-width: 27.5rem;
+		text-align: center;
+		font-size: 0.875rem;
+		line-height: 1.5;
+		color: var(--sl-color-gray-3);
+	}
+
+	/* Structure carried by hairlines, per Quiet Utility — no fills, no shadow. */
+	.layer {
+		fill: none;
+		stroke: var(--sl-color-hairline);
+		stroke-width: 1;
+	}
+
+	/*
+	 * The single accented element in this diagram: the model at the core. It
+	 * gets the same "recessed panel" surface tint the asides use, plus a jade
+	 * hairline, and nothing else in the drawing competes with it.
+	 */
+	.core {
+		fill: var(--sl-color-bg-sidebar);
+		stroke: var(--sl-color-accent);
+	}
+
+	.name {
+		fill: var(--sl-color-white);
+		font-size: 14px;
+		font-weight: 500;
+	}
+
+	.role {
+		fill: var(--sl-color-gray-3);
+		font-size: 12px;
+	}
+</style>

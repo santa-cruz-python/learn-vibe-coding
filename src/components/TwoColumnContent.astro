@@ -1,0 +1,41 @@
+---
+/**
+ * Override of @astrojs/starlight/components/TwoColumnContent.astro.
+ *
+ * Starlight's default reserves a right-hand column here (`.right-sidebar-
+ * container`, sized off `--sl-sidebar-width`) whenever the page has a TOC
+ * at all, regardless of what `PageSidebar` actually renders into it. This
+ * site's `PageSidebar` override no longer puts a desktop panel there (see
+ * that file), but the page still carries `toc` data — it's needed for the
+ * mobile TOC bar and for the TOC now embedded in the left `Sidebar` — so
+ * `data-has-toc` stays set and the default would keep reserving that empty
+ * column, pushing the content off-centre to the left.
+ *
+ * This override drops the reserved column and its width/margin math
+ * entirely, letting `.main-pane` take the full remaining width so
+ * `ContentPanel`'s own `margin-inline: auto` centres the content measure
+ * normally in the space left after the (still present) left sidebar.
+ * `--sl-content-width` (the actual text measure) is untouched — this only
+ * changes what surrounds it, not its size, per the instruction not to
+ * widen the content column.
+ *
+ * `<slot name="right-sidebar" />` is still rendered (unwrapped, with no
+ * width reserved) so `PageSidebar`'s mobile TOC — which positions itself
+ * with `position: fixed` and doesn't depend on its layout parent — still
+ * ends up in the DOM.
+ */
+---
+
+<div class="lg:sl-flex">
+	<slot name="right-sidebar" />
+	<div class="main-pane"><slot /></div>
+</div>
+
+<style>
+	@layer starlight.core {
+		.main-pane {
+			isolation: isolate;
+			width: 100%;
+		}
+	}
+</style>
