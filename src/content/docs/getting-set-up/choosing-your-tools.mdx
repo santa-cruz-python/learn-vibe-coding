@@ -4,6 +4,7 @@ description: Picking a harness, a model, and how to pay for it.
 ---
 
 import { Image } from 'astro:assets';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
 import llmLogos from '../../../assets/llm-logos.png';
 
 There are plenty of environments to choose from
@@ -76,11 +77,78 @@ Can I use OpenAI models with Claude Code? In theory, yes. In practice, it's best
   The risk here is not Codex or Cursor, which don't offer an Anthropic login in the first place. It is the various tools and wrappers that extract your Claude OAuth token and replay it to impersonate Claude Code. That is exactly what the terms prohibit, Anthropic reserves the right to enforce without prior notice, and it did enforce in February 2026. Using one of those is a real way to get your account blocked or banned.
 However it's possible to use API access with any harness; the cost may not be worth it.
 
-Most open source model providers don't have restrictions on what harness you use, so it's possible to use models like DeepSeek, Qwen, or Kimi using Claude Code harness or Codex. This is set in the configuration.
+Most open source model providers don't have restrictions on what harness you use, so it's possible to use models like DeepSeek, Qwen, or Kimi using Claude Code harness or Codex. This is set in the configuration — here's what that actually looks like for each harness, pointed at [Z.ai](https://z.ai) (Zhipu AI's) GLM models over its Anthropic-compatible endpoint.
 
-:::note[Resource Links]
-- Claude Code model configuration: https://code.claude.com/docs/en/model-config
-- Codex configuration: https://github.com/openai/codex/blob/main/docs/config.md
+<Tabs syncKey="harness">
+<TabItem label="Claude Code">
+
+Claude Code reads a third-party endpoint and model overrides from an `env` block in a settings JSON file. For your own machine, that's `~/.claude/settings.json` (create it if it doesn't already exist); for a project shared with a team, put the same block in that project's `.claude/settings.json` instead. See [Settings files and precedence](https://code.claude.com/docs/en/settings) for how the two combine, and note that keys set closer to the project win.
+
+```json title="~/.claude/settings.json"
+{
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "<your-api-key>",
+    "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "glm-5.3-flash[1m]",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "glm-5.3[1m]",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "glm-5.3[1m]",
+    "CLAUDE_CODE_AUTO_COMPACT_WINDOW": "1000000",
+    "CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC": "1",
+    "API_TIMEOUT_MS": "3000000"
+  }
+}
+```
+
+What each key does, confirmed against Claude Code's own [environment variables reference](https://code.claude.com/docs/en/env-vars) and [model configuration](https://code.claude.com/docs/en/model-config) docs:
+
+- `ANTHROPIC_AUTH_TOKEN` sends your key as an `Authorization: Bearer` header, the shape most third-party gateways expect (as opposed to `ANTHROPIC_API_KEY`, which is for Anthropic's own Console keys and sends `X-Api-Key` instead).
+- `ANTHROPIC_BASE_URL` overrides the API endpoint.
+- `ANTHROPIC_DEFAULT_HAIKU_MODEL` / `_SONNET_MODEL` / `_OPUS_MODEL` remap what the `haiku`, `sonnet`, and `opus` aliases resolve to; the `[1m]` suffix requests the provider's extended context window where it's supported.
+- `CLAUDE_CODE_AUTO_COMPACT_WINDOW` sets how many tokens of context Claude Code fills before summarizing older turns — from 100,000 up to 1,000,000.
+- `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` turns off auto-update checks, telemetry, and other calls back to Anthropic that a third-party-only setup doesn't need.
+- `API_TIMEOUT_MS` is the per-request timeout in milliseconds; third-party endpoints are sometimes slower than Anthropic's own.
+
+Model names move fast — GLM was on 5.3 at the time of writing, and the exact ids above came straight from [Z.ai's own Claude Code setup guide](https://docs.z.ai/devpack/tool/claude). Check that page for whatever's current before pasting this in.
+
+</TabItem>
+<TabItem label="Codex">
+
+Codex reads provider configuration from a TOML file at `~/.codex/config.toml` (Codex calls this directory `CODEX_HOME`; it defaults to `~/.codex`). Point it at a third-party OpenAI-compatible endpoint by defining a custom entry under `[model_providers.<id>]` and selecting it with the top-level `model_provider` key — this shape is confirmed against OpenAI's own [Codex configuration reference](https://developers.openai.com/codex/config-reference) and [advanced configuration guide](https://developers.openai.com/codex/config-advanced):
+
+```toml title="~/.codex/config.toml"
+model_provider = "third-party"
+model = "<model-id-your-provider-supports>"
+
+[model_providers.third-party]
+name = "My third-party provider"
+base_url = "https://api.example.com/v1"
+env_key = "THIRD_PARTY_API_KEY"
+```
+
+Then, in your shell — never in `config.toml` itself:
+
+```sh
+export THIRD_PARTY_API_KEY=<your-api-key>
+```
+
+`env_key` doesn't hold the key. It names an environment variable Codex reads the key from at runtime, so the real value never has to sit in a file, checked into git or not. Here's one of OpenAI's own worked examples, verbatim, for a real provider using this same shape:
+
+```toml
+model_provider = "mistral"
+
+[model_providers.mistral]
+name = "Mistral"
+base_url = "https://api.mistral.ai/v1"
+env_key = "MISTRAL_API_KEY"
+```
+
+One catch: a custom provider's `wire_api` defaults to `"responses"`, and per OpenAI's own reference that is currently the only value it supports. The endpoint needs to speak OpenAI's newer Responses API shape, not just the older Chat Completions shape that a lot of "OpenAI-compatible" third-party APIs actually implement — check your provider's docs before assuming this will work for them.
+
+</TabItem>
+</Tabs>
+
+:::caution[Never commit a real key]
+Whatever value replaces `<your-api-key>` above is a secret, in either harness. Follow the [Credentials](../../building/starting-a-project/#credentials) guidance: keep it out of anything committed to git. For Claude Code, that means preferring a project's `.claude/settings.local.json` (which Claude Code keeps out of git for you) over a shared, committed `.claude/settings.json` if the key has to live in a settings file at all. For Codex, it means the key only ever lives in your shell environment or an untracked `.env` — never typed into `config.toml`.
 :::
 
 ## Useful plugins and skills
@@ -91,6 +159,43 @@ There is a vast quantity of open source plugins and skills out there, and some a
   - superpowers: a set of process skills (brainstorming before building, systematic debugging, test-driven development, writing plans) that push the agent through an engineering workflow instead of letting it dive straight into code. If you install only one thing from this list, install this one.
   - remember: persists session history and the decisions made along the way, so your context survives between sessions instead of starting from nothing every morning.
   - code-review: structured review of the changes that were just made.
+
+<Tabs syncKey="harness">
+<TabItem label="Claude Code">
+
+Add the marketplace once, then install whichever plugins you want from it — either from inside a session with the `/plugin` slash command:
+
+```sh
+/plugin marketplace add anthropics/claude-plugins-official
+/plugin install superpowers@claude-plugins-official
+```
+
+or, non-interactively (for example in a setup script), with the `claude plugin` CLI subcommand:
+
+```sh
+claude plugin marketplace add anthropics/claude-plugins-official
+claude plugin install superpowers@claude-plugins-official
+```
+
+Swap `superpowers` for `remember` or `code-review` to install those instead — same marketplace, same two commands. Both forms are confirmed against Claude Code's own [plugin discovery](https://code.claude.com/docs/en/discover-plugins) and [plugins reference](https://code.claude.com/docs/en/plugins-reference) docs.
+
+</TabItem>
+<TabItem label="Codex">
+
+Codex has its own plugin marketplace mechanism, with real working commands — but it is not a drop-in replacement for the repo named above. `anthropics/claude-plugins-official` publishes a `.claude-plugin/marketplace.json` catalog in Claude Code's own schema; Codex instead looks for `.agents/plugins/marketplace.json` in whatever repo you add. The two catalog formats aren't interchangeable, so pointing Codex at that same repo won't work.
+
+To register a Codex-compatible marketplace:
+
+```sh
+codex plugin marketplace add owner/repo
+```
+
+(it also accepts a `--ref <branch>`, a Git URL, or a local path; manage what's already registered with `codex plugin marketplace list`, `upgrade`, and `remove`.)
+
+Installing, though, isn't a single copy-paste command the way it is in Claude Code — Codex doesn't ship a scriptable `codex plugin install`. Open a Codex session and run `/plugins` to browse the plugins available from your configured marketplaces and install one from there. Verified against OpenAI's own [Codex plugins](https://developers.openai.com/codex/plugins) and [building Codex plugins](https://developers.openai.com/codex/plugins/build) docs.
+
+</TabItem>
+</Tabs>
 
 :::caution[Explore Further]{icon="open-book"}
 https://github.com/multica-ai/andrej-karpathy-skills is widely used, and worth reading even if you never install it. Despite the name it is not a skills marketplace: it is a single CLAUDE.md file (plus a Cursor-rules variant and a plugin wrapper) encoding four behavioral rules drawn from Andrej Karpathy's observations of where LLMs go wrong when they write code. Think before coding: state your assumptions and ask rather than guess. Simplicity first: no speculative features. Surgical changes: edit what was asked and nothing else, no drive-by refactors. Goal-driven execution: turn a vague request into verifiable success criteria. Those four ideas are most of what separates a good prompt from a bad one, whatever harness you use.

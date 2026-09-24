@@ -66,6 +66,45 @@
 
 /*
  * ---------------------------------------------------------------------
+ * Expressive Code (fenced ```` ``` ```` blocks — the config/TOML/shell
+ * examples on "Choosing your tools" are the first ones on this site).
+ * Starlight's Expressive Code integration themes its own frame chrome
+ * (title bar, tab bar, borders) from `--sl-color-gray-5/6/7` and
+ * `--sl-color-black`, and sets the code surface itself
+ * (`--ec-codeBg`) to a literal hex baked into the bundled Night Owl
+ * theme. None of those are part of this project's mapping table (see
+ * "Token-sync obligation" above), so left alone they render Starlight's
+ * own cool-toned defaults — a distinctly blue-gray box that clashes with
+ * Quiet Utility's warm surfaces everywhere else on the page.
+ *
+ * Deliberately scoped to the small set of `--ec-*` variables Expressive
+ * Code exposes for exactly this kind of theming, rather than remapping
+ * `--sl-color-gray-5/6/7` / `--sl-color-black` at `:root`: those four are
+ * load-bearing for unrelated, already-shipped Starlight UI across the
+ * whole site (inline `` <code> `` spans, tables, the search modal, the
+ * page TOC divider), so a blanket remap here would silently reskin all
+ * of that too — far outside what "add code blocks to one page" asked
+ * for. Values below are Quiet Utility tokens already in the mapping
+ * table above, not new hex: the same `surface-subtle` + hairline
+ * treatment the asides and framed image use, so a code block reads as
+ * the same "recessed panel," just with a monospace interior.
+ * ---------------------------------------------------------------------
+ */
+:root {
+	--ec-codeBg: var(--sl-color-bg-sidebar);
+	--ec-brdCol: var(--sl-color-hairline);
+	--ec-frm-edBg: var(--sl-color-bg-sidebar);
+	--ec-frm-trmBg: var(--sl-color-bg-sidebar);
+	--ec-frm-edActTabBg: var(--sl-color-bg-sidebar);
+	--ec-frm-edTabBarBg: var(--sl-color-bg-sidebar);
+	--ec-frm-trmTtbBg: var(--sl-color-bg-sidebar);
+	--ec-frm-edTabBarBrdCol: var(--sl-color-hairline);
+	--ec-frm-edTabBarBrdBtmCol: var(--sl-color-hairline);
+	--ec-frm-trmTtbBrdBtmCol: var(--sl-color-hairline);
+}
+
+/*
+ * ---------------------------------------------------------------------
  * Search box focus ring. Starlight themes the Pagefind search input's
  * `border` on focus (via `--pagefind-ui-border`) but never sets its own
  * `outline`, so the browser's native focus-visible ring — blue by default
