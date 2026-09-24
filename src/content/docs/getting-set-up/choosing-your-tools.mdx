@@ -1,5 +1,5 @@
 ---
-title: Getting setup
+title: Getting set up
 description: Picking a harness, a model, and how to pay for it.
 ---
 
@@ -7,15 +7,15 @@ import { Image } from 'astro:assets';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import llmLogos from '../../../assets/llm-logos.png';
 
-There are plenty of environments to choose from
+There are plenty of environments to choose from.
 
-- Codex, Claude Code are the popular proprietary harnesses, complete with Command Line Interface (CLI), desktop apps, and Integrated Development Environment (IDE) plugins for IDE like VS Code or JetBrains.
+- Codex and Claude Code are the popular proprietary harnesses, complete with a Command Line Interface (CLI), desktop apps, and Integrated Development Environment (IDE) plugins for IDEs like VS Code or JetBrains.
 
 - Some others are complete IDEs of their own (like [Cursor](https://cursor.com) or Antigravity), usually forks of the popular VS Code IDE.
 
-- There are also lots of Open Source options that you can find on Github, like [cline](https://github.com/cline/cline), [Kilo Code](https://github.com/Kilo-Org/kilocode) and [opencode](https://github.com/anomalyco/opencode).
+- There are also lots of open-source options that you can find on GitHub, like [cline](https://github.com/cline/cline), [Kilo Code](https://github.com/Kilo-Org/kilocode) and [opencode](https://github.com/anomalyco/opencode).
 
-- Use the CLI, an IDE plugin, or the desktop app, which-ever you are more familiar with. They all tend to offer similar functionalities.
+- Use the CLI, an IDE plugin, or the desktop app, whichever you are most familiar with. They all tend to offer similar functionalities.
 
 ## What model to use?
 
@@ -30,9 +30,9 @@ There are plenty of environments to choose from
 	</figcaption>
 </figure>
 
-The response to this question is ever changing: as models get better and better, and the competition is fierce, the 'best' model depends on the time you ask. You can follow the leaderboard of model performance on sites like LMArena (now Arena): [https://arena.ai/leaderboard](https://arena.ai/leaderboard)
+The response to this question is ever-changing: as models get better and better, and the competition is fierce, the 'best' model depends on the time you ask. You can follow the leaderboard of model performance on sites like LMArena (now Arena): [https://arena.ai/leaderboard](https://arena.ai/leaderboard)
 
-Then, there is the cost: proprietary models tend to be the most expensive, API per token price being set for input tokens and output tokens, while the alternative open-source, cloud based models are often dramatically cheaper. DeepSeek-V4-Flash, for instance, runs about $0.14 per million input tokens and $0.28 per million output, against Claude Sonnet 5 at $2 and $10: between 10 and 35 times less, depending on how your usage splits between input and output.
+Then, there is the cost: proprietary models tend to be the most expensive, API per token price being set for input tokens and output tokens, while the alternative open-source, cloud-based models are often dramatically cheaper. DeepSeek-V4-Flash, for instance, runs about $0.14 per million input tokens and $0.28 per million output, against Claude Sonnet 5 at $2 and $10: between 10 and 35 times less, depending on how your usage splits between input and output.
 
 Don't take that as a rule, though. Pricing varies by model and by the provider hosting it, and open weights do not automatically mean cheap: Kimi K3 is $3 and $15 per million, which is more expensive than Sonnet 5. On quality, the open models may not be at the very top, but they are often close (depending on the moment).
 
@@ -63,21 +63,22 @@ Before buying anything, run the model you are considering on the hardware you al
 
 ## API per token use vs. subscriptions
 
-Models are priced on per input and per output tokens (per Million tokens actually) for API usage, so they can be compared that way, but using API is usually much more costly than using a subscription.
+Models are priced per input token and per output token (per million tokens, actually) for API usage, so they can be compared that way, but using the API is usually much more costly than using a subscription.
 
-Proprietary model providers as well as open-source cloud model providers offer subscriptions that include a variable and undisclosed amount of token usage per 'session' and per week. Sessions usually tend to be for a 5h block of time, and then there is a cap per week. Some subscriptions start with a very limited free tier, but the realistic entry point is around $20 a month: that is what both Claude Pro and ChatGPT Plus cost, and it may sometimes be equivalent to $100's in API token usage. The heavier tiers run $100 to $200 a month.
+Proprietary model providers as well as open-source cloud model providers offer subscriptions that include a variable and undisclosed amount of token usage per 'session' and per week. Sessions usually tend to be for a 5-hour block of time, and then there is a cap per week. Some subscriptions start with a very limited free tier, but the realistic entry point is around $20 a month: that is what both Claude Pro and ChatGPT Plus cost, and it may sometimes be equivalent to $100s in API token usage. The heavier tiers run $100 to $200 a month.
 
 Compare and contrast for yourself, but a subscription is usually the way to go.
 
 ## What harness with what subscription?
 
 Can I use OpenAI models with Claude Code? In theory, yes. In practice, it's best to stick with the harness built by the model provider, for many reasons:
-- proprietary models subscriptions have terms and conditions for their usage. An Anthropic subscription, for example, is meant for Claude Code, the Agent SDK, and Anthropic's own applications (claude.ai, Claude Desktop) — not for third-party clients. Their Legal & Compliance page states that OAuth login is "intended exclusively for purchasers of Claude Free, Pro, Max, Team, and Enterprise subscription plans and is designed to support ordinary use of Claude Code and other native Anthropic applications", and it bars third parties from routing requests through those credentials.
+- proprietary model subscriptions have terms and conditions for their usage. An Anthropic subscription, for example, is meant for Claude Code, the Agent SDK, and Anthropic's own applications (claude.ai, Claude Desktop) — not for third-party clients. Their Legal & Compliance page states that OAuth login is "intended exclusively for purchasers of Claude Free, Pro, Max, Team, and Enterprise subscription plans and is designed to support ordinary use of Claude Code and other native Anthropic applications", and it bars third parties from routing requests through those credentials.
 
-  The risk here is not Codex or Cursor, which don't offer an Anthropic login in the first place. It is the various tools and wrappers that extract your Claude OAuth token and replay it to impersonate Claude Code. That is exactly what the terms prohibit, Anthropic reserves the right to enforce without prior notice, and it did enforce in February 2026. Using one of those is a real way to get your account blocked or banned.
-However it's possible to use API access with any harness; the cost may not be worth it.
+  The risk here is not Codex or Cursor, which don't offer an Anthropic login in the first place. It is the various tools and wrappers that extract your Claude OAuth token and replay it to impersonate Claude Code. That is exactly what the terms prohibit, Anthropic reserves the right to enforce them without prior notice, and it did enforce in February 2026. Using one of those is a real way to get your account blocked or banned.
 
-Most open source model providers don't have restrictions on what harness you use, so it's possible to use models like DeepSeek, Qwen, or Kimi using Claude Code harness or Codex. This is set in the configuration — here's what that actually looks like for each harness, pointed at [Z.ai](https://z.ai) (Zhipu AI's) GLM models over its Anthropic-compatible endpoint.
+However, it's possible to use API access with any harness; the cost may not be worth it.
+
+Most open-source model providers don't have restrictions on what harness you use, so it's possible to use models like DeepSeek, Qwen, or Kimi using the Claude Code harness or Codex. This is set in the configuration — here's what that actually looks like for each harness, pointed at [Z.ai](https://z.ai) (Zhipu AI's) GLM models over its Anthropic-compatible endpoint.
 
 <Tabs syncKey="harness">
 <TabItem label="Claude Code">
@@ -108,7 +109,7 @@ What each key does, confirmed against Claude Code's own [environment variables r
 - `CLAUDE_CODE_DISABLE_NONESSENTIAL_TRAFFIC` turns off auto-update checks, telemetry, and other calls back to Anthropic that a third-party-only setup doesn't need.
 - `API_TIMEOUT_MS` is the per-request timeout in milliseconds; third-party endpoints are sometimes slower than Anthropic's own.
 
-Model names move fast — GLM was on 5.3 at the time of writing, and the exact ids above came straight from [Z.ai's own Claude Code setup guide](https://docs.z.ai/devpack/tool/claude). Check that page for whatever's current before pasting this in.
+Model names move fast — GLM was on 5.3 at the time of writing, and the exact IDs above came straight from [Z.ai's own Claude Code setup guide](https://docs.z.ai/devpack/tool/claude). Check that page for whatever's current before pasting this in.
 
 </TabItem>
 <TabItem label="Codex">
@@ -153,7 +154,7 @@ Whatever value replaces `<your-api-key>` above is a secret, in either harness. F
 
 ## Useful plugins and skills
 
-There is a vast quantity of open source plugins and skills out there, and some are worth mentioning:
+There is a vast quantity of open-source plugins and skills out there, and some are worth mentioning:
 
 - The official Claude Code plugins live at https://github.com/anthropics/claude-plugins-official, and include:
   - superpowers: a set of process skills (brainstorming before building, systematic debugging, test-driven development, writing plans) that push the agent through an engineering workflow instead of letting it dive straight into code. If you install only one thing from this list, install this one.
@@ -204,7 +205,7 @@ codex plugin add superpowers@openai-curated
 </Tabs>
 
 :::caution[Explore Further]{icon="open-book"}
-https://github.com/multica-ai/andrej-karpathy-skills is widely used, and worth reading even if you never install it. Despite the name it is not a skills marketplace: it is a single CLAUDE.md file (plus a Cursor-rules variant and a plugin wrapper) encoding four behavioral rules drawn from Andrej Karpathy's observations of where LLMs go wrong when they write code. Think before coding: state your assumptions and ask rather than guess. Simplicity first: no speculative features. Surgical changes: edit what was asked and nothing else, no drive-by refactors. Goal-driven execution: turn a vague request into verifiable success criteria. Those four ideas are most of what separates a good prompt from a bad one, whatever harness you use.
+https://github.com/multica-ai/andrej-karpathy-skills is widely used, and worth reading even if you never install it. Despite the name, it is not a skills marketplace: it is a single CLAUDE.md file (plus a Cursor-rules variant and a plugin wrapper) encoding four behavioral rules drawn from Andrej Karpathy's observations of where LLMs go wrong when they write code. Think before coding: state your assumptions and ask rather than guess. Simplicity first: no speculative features. Surgical changes: edit what was asked and nothing else, no drive-by refactors. Goal-driven execution: turn a vague request into verifiable success criteria. Those four ideas are most of what separates a good prompt from a bad one, whatever harness you use.
 :::
 
 ### Installing a skill into your project
@@ -245,7 +246,7 @@ curl -o .agents/skills/karpathy-guidelines/SKILL.md \
   https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/skills/karpathy-guidelines/SKILL.md
 ```
 
-This particular repo only ships a Claude Code plugin manifest, not the `.agents/plugins/marketplace.json` Codex's marketplace command looks for, so `codex plugin marketplace add` won't find it here — copying the file directly, as above, is the way. For the always-on-context version, Codex reads `AGENTS.md` instead of `CLAUDE.md`; the repo doesn't publish one, but the content is plain markdown, so the same file works there too:
+This particular repo only ships a Claude Code plugin manifest, not the `.agents/plugins/marketplace.json` Codex's marketplace command looks for, so `codex plugin marketplace add` won't find it here — copying the file directly, as above, is the way. For the always-on-context version, Codex reads `AGENTS.md` instead of `CLAUDE.md`; the repo doesn't publish one, but the content is plain Markdown, so the same file works there too:
 
 ```sh
 curl https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/CLAUDE.md >> AGENTS.md
