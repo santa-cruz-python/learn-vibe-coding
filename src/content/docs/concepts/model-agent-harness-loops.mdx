@@ -7,18 +7,18 @@ import StackDiagram from '../../../components/diagrams/StackDiagram.astro';
 import ToolCallCycle from '../../../components/diagrams/ToolCallCycle.astro';
 import ContextCompaction from '../../../components/diagrams/ContextCompaction.astro';
 
-here we'll describe the stack and how it builds on each previous level:
+Here we'll describe the stack and how it builds on each previous level:
 
 <StackDiagram />
 
 ## Large Language Models (LLM)
 
-OpenAI GPT, Anthropic Claude, Gemini and a multitude of open sourced models (Deepseek, Kimi, Qwen, Gemma...)
+OpenAI GPT, Anthropic Claude, Gemini and a multitude of open-source models (DeepSeek, Kimi, Qwen, Gemma...).
 
-Whatever the model, it's been trained to output text from a text input. Some models are 'multimodal', which means they can also understand images (and sometimes voice)
-They are the core to the system. The input of an LLM is the 'prompt'.
+Whatever the model, it's been trained to output text from a text input. Some models are 'multimodal', which means they can also understand images (and sometimes voice).
+They are the core of the system. The input of an LLM is the 'prompt'.
 
-The 'context' is what is passed as part of the prompt to help the LLM provide the best possible answer, this may include content such as documentation, existing code or other local files.
+The 'context' is what is passed as part of the prompt to help the LLM provide the best possible answer. This may include content such as documentation, existing code or other local files.
 
 The LLM converts text into tokens. A token is roughly equivalent to a word, but a word may be multiple tokens.
 
@@ -36,7 +36,7 @@ The context 'window' is the maximum size the LLM can handle at one time, includi
 
 ## Agent
 
-An Agent is a unit that makes calls to LLMs. An agent usually has instructions (System prompt, user prompt) and may have access to tools. Tools definitions are part of the prompt: the LLM generally does not run the tools; it decides if it needs to run a tool to perform a task, and provides a structured output to tell the client what tool to call with what parameters. The agent calling the LLM then can run the tool, and provide the output of the tool to the next turn of the conversation for the LLM to evaluate.
+An Agent is a unit that makes calls to LLMs. An agent usually has instructions (System prompt, user prompt) and may have access to tools. Tool definitions are part of the prompt: the LLM generally does not run the tools; it decides if it needs to run a tool to perform a task, and provides a structured output to tell the client what tool to call with what parameters. The agent calling the LLM then can run the tool, and provide the output of the tool to the next turn of the conversation for the LLM to evaluate.
 
 <ToolCallCycle />
 
@@ -44,13 +44,13 @@ So an agent calls a model with instructions, gathers the output, and decides wha
 
 ### Tools
 
-There are lots of tools an agent may need to code: starting with searching and reading through the existing code to understand what is there, researching documentation for the modules used in the code base, looking up function signatures etc... and then writing the code itself, whether creating new files or editing existing files. Write tests, run the test suite to validate functionalities, search files, create folders, run local tools like linting, formatting, type checking, or run a local version of the program itself and even visualize the output in a browser for example.
+There are lots of tools an agent may need to code: starting with searching and reading through the existing code to understand what is there, researching documentation for the modules used in the code base, looking up function signatures etc. and then writing the code itself, whether creating new files or editing existing files. Write tests, run the test suite to validate functionalities, search files, create folders, run local tools like linting, formatting, type checking, or run a local version of the program itself and even visualize the output in a browser for example.
 
 ## Harness
 
-The harness is the software that manages the agent(s): it is the tool the developer uses to converse with the AI agent(s), and passes the context to the agent (prompt, tool definitions, skills etc...) for the agent to use. The harness ensures the agents keep working on the task described by the user, and goes through specific steps to organize that work (like planning, creating a task list, dividing the work among agents if needed, gather outputs, update the task list as progress is made, and continue)
+The harness is the software that manages the agent(s): it is the tool the developer uses to converse with the AI agent(s), and passes the context to the agent (prompt, tool definitions, skills etc.) for the agent to use. The harness ensures the agents keep working on the task described by the user, and goes through specific steps to organize that work (like planning, creating a task list, dividing the work among agents if needed, gathering outputs, updating the task list as progress is made, and continuing).
 
-Harnesses include tool definitions for tools needed for development (read folder, files, search, grep, write file, run shell commands etc...)
+Harnesses include tool definitions for tools needed for development (read folder, files, search, grep, write file, run shell commands etc.).
 
 ### AGENTS.md and CLAUDE.md files
 

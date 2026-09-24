@@ -9,18 +9,18 @@ import BuildLoop from '../../../components/diagrams/BuildLoop.astro';
 
 ## Research: What do you want to build? Think like a Product Manager.
 
-Do you have an idea in mind, and you know what you want, or is there still grey areas? Either way, it's usually a great idea to start with research.
+Do you have an idea in mind, and you know what you want, or are there still grey areas? Either way, it's usually a great idea to start with research.
 Most harnesses will do research on any topic when prompted to 'research' something. Some harnesses have a 'deep research' option that can be very useful for that task.
 
 Things to research might include:
 
-- who
-    audience: who will use your product? what are the user personas? how are they distributed? how do they interact? if you're trying to monetize, who will pay money for this product?
+- who:
+    audience: who will use your product? What are the user personas? How are they distributed? How do they interact? If you're trying to monetize, who will pay money for this product?
 
 - what:
-    what does the product do? research what each user persona wants to achieve with this product. This is the time to be creative and find all the possible usage and features a user may want or need.
+    What does the product do? Research what each user persona wants to achieve with this product. This is the time to be creative and find all the possible uses and features a user may want or need.
 
-    What are the minimal features needed to launch the product? what persona(s) should be targeted first? what will the Minimal Viable Product (MVP) include (must do, could do, won't do)
+    What are the minimal features needed to launch the product? What persona(s) should be targeted first? What will the Minimum Viable Product (MVP) include (must do, could do, won't do)?
 
 - how:
     - research how similar products are built, what technology is commonly used, what architecture makes sense. Also research the design side of the project: what platform should you build for (desktop, mobile, server), what user interface your users are already used to?
@@ -28,27 +28,27 @@ Things to research might include:
     - research how this product can be deployed to scale to the number of users and interactions you expect. Find out what architecture is best.
 
 :::tip[Pro Tip]
-As a general guidance: think big, start small. Starting with a small idea and growing it organically tends to produce very messy code bases and performance issues in the long run. Think big, think of all the things the product may do in the future, and document this future state, so whenever you work on a feature, the AI agent understands where it fits in the big picture; it is much more likely to chose the proper technology stack and architecture if it knows the end-goal. Starting small, the choices are endless. It is easy for AI to pick a technological solution that seems simple and cheap at the time, but won't scale or grow with the product as it needs to.
+As a general guidance: think big, start small. Starting with a small idea and growing it organically tends to produce very messy codebases and performance issues in the long run. Think big, think of all the things the product may do in the future, and document this future state, so whenever you work on a feature, the AI agent understands where it fits in the big picture; it is much more likely to choose the proper technology stack and architecture if it knows the end-goal. Starting small, the choices are endless. It is easy for AI to pick a technological solution that seems simple and cheap at the time, but won't scale or grow with the product as it needs to.
 :::
 
 :::tip[Pro Tip]
 If you don't know what's best, don't leave it to AI to choose for you. Ask AI to give you options, along with pros and cons, so you can make the right decision for your product.
-AI tends to recommend 'most popular' solutions, and might box you into using services or platforms that are meant for testing or proof of concepts (PoC), like using SQLite for a database. SQLite is not a toy, and plenty of real products run on it: reads are unlimited and concurrent, and read-heavy applications scale a very long way on it. But it allows exactly one writer at a time, it lives in a single file so you inherit whatever size ceiling the filesystem imposes, and it is not safe over a network filesystem. If your product needs concurrent writes, or several servers talking to the same database, that is the wall you will hit, and it is much better to know it before you build on top of it than after. Make sure you understand the choices made and their downsides.
+AI tends to recommend 'most popular' solutions, and might box you into using services or platforms that are meant for testing or proofs of concept (PoC), like using SQLite for a database. SQLite is not a toy, and plenty of real products run on it: reads are unlimited and concurrent, and read-heavy applications scale a very long way on it. But it allows exactly one writer at a time, it lives in a single file so you inherit whatever size ceiling the filesystem imposes, and it is not safe over a network filesystem. If your product needs concurrent writes, or several servers talking to the same database, that is the wall you will hit, and it is much better to know it before you build on top of it than after. Make sure you understand the choices made and their downsides.
 :::
 
 ## Plan: “By failing to prepare, you are preparing to fail.”
 
 After research has surfaced the core product features and architecture, it's time to plan.
 
-Planning is the continuation of the research. Some harnesses have a specific 'plan' mode you should use, to ensure it doesn't start coding before you completed the plan. Planning consist in defining precisely what will be built and how. With all your product features defined and documented, come down to a MVP to get started with. The plan is the task list the AI will follow to write the code. It should include everything that needs to be done to build and run a local version of the product (leave deployment as a secondary phase, as long as the architecture has been thought out in the research).
+Planning is the continuation of the research. Some harnesses have a specific 'plan' mode you should use, to ensure it doesn't start coding before you have completed the plan. Planning consists of defining precisely what will be built and how. With all your product features defined and documented, come down to an MVP to get started with. The plan is the task list the AI will follow to write the code. It should include everything that needs to be done to build and run a local version of the product (leave deployment as a secondary phase, as long as the architecture has been thought out in the research).
 
 ### Interface design
 
-If you're non-technical, you'll probably want to build software that is meant for web or desktop usage, with a User Interface (UI). UI design (the look and feel of the app) comes with User Experience (UX) design, to produce a smooth and frustration free user experience. Both of these are non-trivial, and it's a field of software development of its own: most software developers are not UI/UX designers either.
+If you're non-technical, you'll probably want to build software that is meant for web or desktop usage, with a User Interface (UI). UI design (the look and feel of the app) comes with User Experience (UX) design, to produce a smooth and frustration-free user experience. Both of these are non-trivial, and it's a field of software development of its own: most software developers are not UI/UX designers either.
 
-Luckily there is help. There are many open source frameworks to build a UI on, one of the most popular being TailwindCSS, a utility-first CSS framework. And one of the first things you might want to do, once you have researched the UI / UX, is build a design system: one file that pins down your colors, typography, spacing and radii, so that every screen the AI builds afterwards looks like it belongs to the same product.
+Luckily there is help. There are many open-source frameworks to build a UI on, one of the most popular being TailwindCSS, a utility-first CSS framework. And one of the first things you might want to do, once you have researched the UI / UX, is build a design system: one file that pins down your colors, typography, spacing and radii, so that every screen the AI builds afterwards looks like it belongs to the same product.
 
-Google, through its Stitch team, published a format and a tool for exactly that: https://github.com/google-labs-code/design.md. It works in two halves, and it is worth understanding which half is which. The DESIGN.md itself you author: YAML design tokens, plus markdown explaining the reasoning behind each choice. That file is your source of truth, and writing it is exactly the kind of work to do with your AI agent, so point it at the repository to learn the format and then build the file together, based on the results of your research (type of theme, color schemes, typography...). The CLI then takes over: `lint` validates the file against an eleven-rule set, `diff` compares versions, and `export` generates the theme files your code actually consumes, whether that's a Tailwind v4 `theme.css`, a Tailwind v3 config, or W3C design-token JSON.
+Google, through its Stitch team, published a format and a tool for exactly that: https://github.com/google-labs-code/design.md. It works in two halves, and it is worth understanding which half is which. The DESIGN.md itself you author: YAML design tokens, plus Markdown explaining the reasoning behind each choice. That file is your source of truth, and writing it is exactly the kind of work to do with your AI agent, so point it at the repository to learn the format and then build the file together, based on the results of your research (type of theme, color schemes, typography...). The CLI then takes over: `lint` validates the file against an eleven-rule set, `diff` compares versions, and `export` generates the theme files your code actually consumes, whether that's a Tailwind v4 `theme.css`, a Tailwind v3 config, or W3C design-token JSON.
 
 That generation step is most of the value. You change a color in one place, regenerate, and everything downstream follows, instead of hunting the same hex code through three files and missing one. Incorporate this step in your build plan.
 
@@ -57,7 +57,7 @@ That generation step is most of the value. You change a color in one place, rege
 Read it carefully and make sure you understand it and agree with it. Fixing a bad plan early will save you long hours of fixing the code later.
 
 :::tip[Pro Tip]
-Life is much easier when using containers. Containers are meant to be a "build once, deploy everywhere" solution, which can be used to build a local demo and later deploy in the cloud. It is often easier and safer to ask AI to build the local version in a container environment, to ensure it will run anywhere else
+Life is much easier when using containers. Containers are meant to be a "build once, deploy everywhere" solution, which can be used to build a local demo and later deploy in the cloud. It is often easier and safer to ask AI to build the local version in a container environment, to ensure it will run anywhere else.
 :::
 
 :::caution[Explore Further]{icon="open-book"}
@@ -68,11 +68,11 @@ Docker's own getting started guide takes you from installing Docker to running, 
 
 You've done your research, you documented the big picture of the product you want to build, you defined the architecture and design principles you want the AI to follow, and you created a plan of what to build. Now you can start building.
 
-In some harnesses, you simply need to 'agree with the plan', or just prompt the AI to build the software as per the plan. If your plan is documented as a file in the project directory, it may be necessary to reference it in the context (use @filename to add a file to context in most harnesses)
+In some harnesses, you simply need to 'agree with the plan', or just prompt the AI to build the software as per the plan. If your plan is documented as a file in the project directory, it may be necessary to reference it in the context (use @filename to add a file to context in most harnesses).
 
 ### Goals
 
-Some harnesses have a /goal feature. A typical goal may be simply: build the product as planned, until all features are completed, and tested.
+Some harnesses have a /goal feature. A typical goal may be simply: build the product as planned, until all features are completed and tested.
 
 Your AGENTS.md file may include instructions to commit as the work progresses, so that a long-running goal checks itself in at meaningful checkpoints: a feature finished, a test suite green. Not after every small edit, which gives you a history too noisy to read. Done that way, you can let the goal run for a while unattended and still have a clean trail to walk back through afterwards, and a known good state to return to if it wandered off.
 
