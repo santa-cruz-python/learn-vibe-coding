@@ -1,0 +1,45 @@
+---
+// Extends Starlight's default Footer (edit link, last updated, pagination)
+// with a copyright line. The site is all-rights-reserved, so the notice
+// belongs on every rendered page, not only in the LICENSE file.
+import Default from '@astrojs/starlight/components/Footer.astro';
+
+const year = new Date().getFullYear();
+const licenseUrl =
+	'https://github.com/santa-cruz-python/learn-vibe-coding/blob/main/LICENSE';
+---
+
+<Default><slot /></Default>
+
+<div class="qu-copyright">
+	<p>
+		&copy; {year} Emmanuel Leroy. All rights reserved.
+		<a href={licenseUrl}>License</a>
+	</p>
+</div>
+
+<style>
+	.qu-copyright {
+		margin-top: 1.5rem;
+		padding-top: 1rem;
+		border-top: 1px solid var(--sl-color-hairline);
+		font-size: var(--sl-text-xs);
+		line-height: 1.5;
+		color: var(--sl-color-gray-3);
+	}
+
+	.qu-copyright p {
+		margin: 0;
+	}
+
+	.qu-copyright a {
+		color: var(--sl-color-gray-3);
+		text-decoration: underline;
+		text-underline-offset: 0.2em;
+		margin-inline-start: 0.5rem;
+	}
+
+	.qu-copyright a:hover {
+		color: var(--sl-color-white);
+	}
+</style>

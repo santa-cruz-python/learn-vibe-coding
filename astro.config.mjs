@@ -20,6 +20,9 @@ export default defineConfig({
 				Sidebar: './src/components/Sidebar.astro',
 				PageSidebar: './src/components/PageSidebar.astro',
 				TwoColumnContent: './src/components/TwoColumnContent.astro',
+				// Adds the all-rights-reserved notice to every page. The
+				// LICENSE file alone isn't visible to anyone reading the site.
+				Footer: './src/components/Footer.astro',
 			},
 			social: [
 				{
