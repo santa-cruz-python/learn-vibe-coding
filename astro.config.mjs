@@ -59,7 +59,7 @@ export default defineConfig({
 				{
 					label: 'Building',
 					items: [
-						{ label: 'Starting a project', slug: 'building/starting-a-project' },
+						{ label: 'Starting a new project', slug: 'building/starting-a-project' },
 						{
 							label: 'Research, plan, build, verify',
 							slug: 'building/research-plan-build-verify',

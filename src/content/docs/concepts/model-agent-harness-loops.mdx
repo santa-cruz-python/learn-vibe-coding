@@ -7,11 +7,11 @@ import StackDiagram from '../../../components/diagrams/StackDiagram.astro';
 import ToolCallCycle from '../../../components/diagrams/ToolCallCycle.astro';
 import ContextCompaction from '../../../components/diagrams/ContextCompaction.astro';
 
-Here we'll describe the stack and how it builds on each previous level:
+Here we'll describe the stack — the layers vibe coding is built from — and how each layer builds on the one below it:
 
 <StackDiagram />
 
-## Large Language Models (LLM)
+## Large Language Models (LLMs)
 
 OpenAI GPT, Anthropic Claude, Gemini and a multitude of open-source models (DeepSeek, Kimi, Qwen, Gemma...).
 
@@ -36,7 +36,7 @@ The context 'window' is the maximum size the LLM can handle at one time, includi
 
 ## Agent
 
-An Agent is a unit that makes calls to LLMs. An agent usually has instructions (System prompt, user prompt) and may have access to tools. Tool definitions are part of the prompt: the LLM generally does not run the tools; it decides if it needs to run a tool to perform a task, and provides a structured output to tell the client what tool to call with what parameters. The agent calling the LLM then can run the tool, and provide the output of the tool to the next turn of the conversation for the LLM to evaluate.
+An agent is a program that sends prompts to an LLM and acts on what comes back. An agent usually has instructions (System prompt, user prompt) and may have access to tools. Tool definitions are part of the prompt: the LLM generally does not run the tools; it decides if it needs to run a tool to perform a task, and provides a structured output to tell the client what tool to call with what parameters. The agent can then run the tool, and provide the output of the tool to the next turn of the conversation for the LLM to evaluate.
 
 <ToolCallCycle />
 
@@ -44,11 +44,11 @@ So an agent calls a model with instructions, gathers the output, and decides wha
 
 ### Tools
 
-There are lots of tools an agent may need to code: starting with searching and reading through the existing code to understand what is there, researching documentation for the modules used in the code base, looking up function signatures etc. and then writing the code itself, whether creating new files or editing existing files. Write tests, run the test suite to validate functionalities, search files, create folders, run local tools like linting, formatting, type checking, or run a local version of the program itself and even visualize the output in a browser for example.
+There are lots of tools an agent may need to code: starting with searching and reading through the existing code to understand what is there, researching documentation for the modules used in the code base, looking up function signatures etc. and then writing the code itself, whether creating new files or editing existing files. It may also need to write tests and run them to check the features work, search files, create folders, run local tools like linters, formatters and type checkers, run a local version of the program, and even look at the result in a browser.
 
 ## Harness
 
-The harness is the software that manages the agent(s): it is the tool the developer uses to converse with the AI agent(s), and passes the context to the agent (prompt, tool definitions, skills etc.) for the agent to use. The harness ensures the agents keep working on the task described by the user, and goes through specific steps to organize that work (like planning, creating a task list, dividing the work among agents if needed, gathering outputs, updating the task list as progress is made, and continuing).
+The harness is the software that manages the agents: it is the tool the developer uses to converse with them, and passes the context to the agent (prompt, tool definitions, skills etc.) for the agent to use. The harness ensures the agents keep working on the task described by the user, and goes through specific steps to organize that work (like planning, creating a task list, dividing the work among agents if needed, gathering outputs, updating the task list as progress is made, and continuing).
 
 Harnesses include tool definitions for tools needed for development (read folder, files, search, grep, write file, run shell commands etc.).
 
@@ -56,13 +56,13 @@ Harnesses include tool definitions for tools needed for development (read folder
 
 These files contain custom instructions for the harness, to set your preferences globally or for a specific project. Most harnesses look for AGENTS.md; Claude Code looks for CLAUDE.md.
 
-Since version 2.1.277 (September 2026), Claude Code will also read AGENTS.md, but only as a fallback: it looks for CLAUDE.md first, and reads AGENTS.md only when there is no CLAUDE.md. The two are never merged. If both files exist, CLAUDE.md wins and your AGENTS.md is ignored entirely. The fallback is also still behind a feature flag (check `/config`, under "Project instructions"), and it is not available on Bedrock, Vertex or Foundry.
+Since version 2.1.277 (September 2026), Claude Code will also read AGENTS.md, but only as a fallback: it looks for CLAUDE.md first, and reads AGENTS.md only when there is no CLAUDE.md. The two are never merged. If both files exist, CLAUDE.md wins and your AGENTS.md is ignored entirely. The fallback is also still behind a feature flag (check `/config`, under "Project instructions"), and it is not available on Bedrock, Vertex or Foundry (the enterprise cloud services you can run these models through).
 
 So to be compatible with any harness, standardize on a single AGENTS.md, and make sure you don't leave a CLAUDE.md sitting next to it. A leftover CLAUDE.md takes precedence silently, and you will be editing an AGENTS.md that nothing ever reads.
 
 ### Skills
 
-Skills are packaged, reusable sets of instructions that the harness loads on demand, for one particular kind of task: reviewing a pull request, writing a commit message, debugging a failing test, building a release. Rather than re-explaining the same workflow every session, you write it down once as a skill and the harness pulls it into the context when the task matches, and leaves it out when it doesn't, so it costs you nothing the rest of the time.
+Skills are packaged, reusable sets of instructions that the harness loads on demand, for one particular kind of task: reviewing a proposed change, writing a commit message, debugging a failing test, building a release. Rather than re-explaining the same workflow every session, you write it down once as a skill and the harness pulls it into the context when the task matches, and leaves it out when it doesn't, so it costs you nothing the rest of the time.
 
 Skills can be your own, shared with your team, or installed from someone else's plugin. They are the difference between telling the AI how you like things done and having it already know.
 
