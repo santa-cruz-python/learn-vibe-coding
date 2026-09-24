@@ -184,15 +184,21 @@ Swap `superpowers` for `remember` or `code-review` to install those instead — 
 
 Codex has its own plugin marketplace mechanism, with real working commands — but it is not a drop-in replacement for the repo named above. `anthropics/claude-plugins-official` publishes a `.claude-plugin/marketplace.json` catalog in Claude Code's own schema; Codex instead looks for `.agents/plugins/marketplace.json` in whatever repo you add. The two catalog formats aren't interchangeable, so pointing Codex at that same repo won't work.
 
-To register a Codex-compatible marketplace:
+OpenAI's own equivalent lives at https://github.com/openai/plugins: an actively maintained repo under the `openai` GitHub org publishing exactly that catalog (marketplace name `openai-curated`), and the actual source for the curated directory built into the Codex app — OpenAI's own docs load the plugin browser's icons straight from this repo. Most of it is company connectors (Figma, Slack, Stripe, and the like), but two entries earn a place in an everyday coding setup:
+
+- `superpowers`: the same planning, TDD, and systematic-debugging skill set as the Claude Code plugin above, ported to Codex almost skill-for-skill. Install this one first.
+- `coderabbit`: AI code review from CodeRabbit, packaged as Codex skills that inspect your current diff and turn findings into follow-up fixes.
+
+There's no Codex plugin for session memory yet — nothing in the official marketplace does what `remember` does for Claude Code. That's a real gap in the ecosystem today, not an omission here.
+
+Register the marketplace and install from it:
 
 ```sh
-codex plugin marketplace add owner/repo
+codex plugin marketplace add openai/plugins
+codex plugin add superpowers@openai-curated
 ```
 
-(it also accepts a `--ref <branch>`, a Git URL, or a local path; manage what's already registered with `codex plugin marketplace list`, `upgrade`, and `remove`.)
-
-Installing, though, isn't a single copy-paste command the way it is in Claude Code — Codex doesn't ship a scriptable `codex plugin install`. Open a Codex session and run `/plugins` to browse the plugins available from your configured marketplaces and install one from there. Verified against OpenAI's own [Codex plugins](https://developers.openai.com/codex/plugins) and [building Codex plugins](https://developers.openai.com/codex/plugins/build) docs.
+(`marketplace add` also accepts a `--ref <branch>`, a Git URL, or a local path; manage what's registered with `codex plugin marketplace list`, `upgrade`, and `remove`. Swap the plugin name to install `coderabbit` instead.) You can also skip the CLI and run `/plugins` inside a Codex session to browse and install from any configured marketplace, including the directory that ships built in. Verified against OpenAI's own [Codex plugins](https://developers.openai.com/codex/plugins), [building Codex plugins](https://developers.openai.com/codex/plugins/build), and [developer commands](https://developers.openai.com/codex/cli/reference) docs.
 
 </TabItem>
 </Tabs>
@@ -200,3 +206,52 @@ Installing, though, isn't a single copy-paste command the way it is in Claude Co
 :::caution[Explore Further]{icon="open-book"}
 https://github.com/multica-ai/andrej-karpathy-skills is widely used, and worth reading even if you never install it. Despite the name it is not a skills marketplace: it is a single CLAUDE.md file (plus a Cursor-rules variant and a plugin wrapper) encoding four behavioral rules drawn from Andrej Karpathy's observations of where LLMs go wrong when they write code. Think before coding: state your assumptions and ask rather than guess. Simplicity first: no speculative features. Surgical changes: edit what was asked and nothing else, no drive-by refactors. Goal-driven execution: turn a vague request into verifiable success criteria. Those four ideas are most of what separates a good prompt from a bad one, whatever harness you use.
 :::
+
+### Installing a skill into your project
+
+A plugin bundles several skills at once; sometimes you just want one, from a repo that isn't a plugin at all. That's a plain file copy — no marketplace involved.
+
+<Tabs syncKey="harness">
+<TabItem label="Claude Code">
+
+Skills live at `.claude/skills/<skill-name>/SKILL.md`: inside a project to check into git and share with the team, or under `~/.claude/skills/<skill-name>/SKILL.md` on your own machine to load in every project you open. The file needs `name` and `description` frontmatter; everything after it is the instructions Claude reads once the task matches.
+
+The Karpathy repo above ships exactly such a file, so grab it directly:
+
+```sh
+mkdir -p .claude/skills/karpathy-guidelines
+curl -o .claude/skills/karpathy-guidelines/SKILL.md \
+  https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/skills/karpathy-guidelines/SKILL.md
+```
+
+That's the whole install. (The repo also ships a Claude Code plugin wrapper — `/plugin marketplace add multica-ai/andrej-karpathy-skills` then `/plugin install andrej-karpathy-skills@karpathy-skills` — which installs the same skill file; either path works.) If you'd rather have the four rules as always-on project context instead of a skill Claude decides when to invoke, curl the repo's plain `CLAUDE.md` into your own instead:
+
+```sh
+curl https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/CLAUDE.md >> CLAUDE.md
+```
+
+Confirmed against Claude Code's own [skills docs](https://code.claude.com/docs/en/skills).
+
+</TabItem>
+<TabItem label="Codex">
+
+Codex uses the same SKILL.md shape, just a different directory: `.agents/skills/<skill-name>/SKILL.md` in the repo (Codex walks up from wherever you launched it to the repo root, so this works from any subdirectory), or `~/.agents/skills/<skill-name>/SKILL.md` for every project on your machine.
+
+The Karpathy repo's skill file needs no changes to work here — same frontmatter, same body:
+
+```sh
+mkdir -p .agents/skills/karpathy-guidelines
+curl -o .agents/skills/karpathy-guidelines/SKILL.md \
+  https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/skills/karpathy-guidelines/SKILL.md
+```
+
+This particular repo only ships a Claude Code plugin manifest, not the `.agents/plugins/marketplace.json` Codex's marketplace command looks for, so `codex plugin marketplace add` won't find it here — copying the file directly, as above, is the way. For the always-on-context version, Codex reads `AGENTS.md` instead of `CLAUDE.md`; the repo doesn't publish one, but the content is plain markdown, so the same file works there too:
+
+```sh
+curl https://raw.githubusercontent.com/multica-ai/andrej-karpathy-skills/main/CLAUDE.md >> AGENTS.md
+```
+
+Confirmed against OpenAI's own [skills docs](https://developers.openai.com/codex/skills).
+
+</TabItem>
+</Tabs>
