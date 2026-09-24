@@ -152,3 +152,39 @@
 	border-color: var(--sl-color-hairline);
 	background-color: var(--sl-color-bg-sidebar);
 }
+
+/*
+ * ---------------------------------------------------------------------
+ * Framed images (choosing-your-tools' provider-logo grid). The source
+ * photo/graphic ships on a plain white background, which would sit as a
+ * glaring rectangle directly on the dark theme's page background. Framed
+ * in the same recessed panel the asides and diagrams use — hairline
+ * border, `--sl-color-bg-sidebar` wash, 8px radius — so it reads as a
+ * deliberately presented image (like a screenshot card) rather than an
+ * unstyled `<img>`, in both color schemes. Same "structure carried by
+ * borders and spacing, not color" rule as everywhere else on this site.
+ * ---------------------------------------------------------------------
+ */
+.qu-image-frame {
+	margin: 1.75rem auto;
+	max-width: 30rem;
+	border: 1px solid var(--sl-color-hairline);
+	border-radius: 0.5rem;
+	background-color: var(--sl-color-bg-sidebar);
+	padding: 1rem;
+}
+
+.qu-image-frame img {
+	display: block;
+	width: 100%;
+	height: auto;
+	border-radius: 0.25rem;
+}
+
+.qu-image-frame figcaption {
+	margin: 0.75rem 0 0;
+	text-align: center;
+	font-size: 0.875rem;
+	line-height: 1.5;
+	color: var(--sl-color-gray-3);
+}

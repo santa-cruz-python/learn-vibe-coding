@@ -3,6 +3,9 @@ title: Getting setup
 description: Picking a harness, a model, and how to pay for it.
 ---
 
+import { Image } from 'astro:assets';
+import llmLogos from '../../../assets/llm-logos.png';
+
 There are plenty of environments to choose from
 
 - Codex, Claude Code are the popular proprietary harnesses, complete with Command Line Interface (CLI), desktop apps, and Integrated Development Environment (IDE) plugins for IDE like VS Code or JetBrains.
@@ -14,6 +17,17 @@ There are plenty of environments to choose from
 - Use the CLI, an IDE plugin, or the desktop app, which-ever you are more familiar with. They all tend to offer similar functionalities.
 
 ## What model to use?
+
+<figure class="qu-image-frame">
+	<Image
+		src={llmLogos}
+		width={960}
+		alt="Logos of six AI model providers: OpenAI, Anthropic (Claude), DeepSeek, Moonshot AI (Kimi), xAI (Grok), and Alibaba (Qwen)."
+	/>
+	<figcaption>
+		A handful of the providers you'll run into: proprietary (OpenAI, Anthropic, xAI) alongside open-weight (DeepSeek, Kimi, Qwen).
+	</figcaption>
+</figure>
 
 The response to this question is ever changing: as models get better and better, and the competition is fierce, the 'best' model depends on the time you ask. You can follow the leaderboard of model performance on sites like LMArena (now Arena): [https://arena.ai/leaderboard](https://arena.ai/leaderboard)
 
