@@ -7,9 +7,9 @@ import { Image } from 'astro:assets';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import llmLogos from '../../../assets/llm-logos.png';
 
-There are plenty of environments to choose from.
+There are plenty of harnesses to choose from.
 
-- Codex and Claude Code are the popular proprietary harnesses, complete with a Command Line Interface (CLI), desktop apps, and Integrated Development Environment (IDE) plugins for IDEs like VS Code or JetBrains.
+- Codex and Claude Code are the popular proprietary harnesses, complete with a Command Line Interface (CLI), desktop apps, and plugins for Integrated Development Environments (IDEs) like VS Code or JetBrains.
 
 - Some others are complete IDEs of their own (like [Cursor](https://cursor.com) or Antigravity), usually forks of the popular VS Code IDE.
 
@@ -30,11 +30,11 @@ There are plenty of environments to choose from.
 	</figcaption>
 </figure>
 
-The response to this question is ever-changing: as models get better and better, and the competition is fierce, the 'best' model depends on the time you ask. You can follow the leaderboard of model performance on sites like LMArena (now Arena): [https://arena.ai/leaderboard](https://arena.ai/leaderboard)
+The answer to this question keeps changing: models keep getting better, the competition is fierce, and the 'best' one depends on when you ask. You can follow the leaderboard of model performance on sites like LMArena (now Arena): [https://arena.ai/leaderboard](https://arena.ai/leaderboard)
 
-Then, there is the cost: proprietary models tend to be the most expensive, API per token price being set for input tokens and output tokens, while the alternative open-source, cloud-based models are often dramatically cheaper. DeepSeek-V4-Flash, for instance, runs about $0.14 per million input tokens and $0.28 per million output, against Claude Sonnet 5 at $2 and $10: between 10 and 35 times less, depending on how your usage splits between input and output.
+Then, there is the cost: proprietary models tend to be the most expensive. They charge separately for the tokens you send in and the tokens they send back, while the alternative open-source, cloud-based models are often dramatically cheaper. DeepSeek-V4-Flash, for instance, runs about $0.14 per million input tokens and $0.28 per million output, against Claude Sonnet 5 at $2 and $10: between 14 and 36 times less, depending on how your usage splits between input and output.
 
-Don't take that as a rule, though. Pricing varies by model and by the provider hosting it, and open weights do not automatically mean cheap: Kimi K3 is $3 and $15 per million, which is more expensive than Sonnet 5. On quality, the open models may not be at the very top, but they are often close (depending on the moment).
+Don't take that as a rule, though. Pricing varies by model and by the provider hosting it, and open weights — a model whose innards the maker has published, so anyone can host it or run it themselves — do not automatically mean cheap: Kimi K3 is $3 and $15 per million, which is more expensive than Sonnet 5. On quality, the open models may not be at the very top, but they are often close (depending on the moment).
 
 ## Local models
 
@@ -42,11 +42,13 @@ Everything above assumes you are renting a model from somebody. You don't have t
 
 The catch is what it costs to get there.
 
-Around 24GB of VRAM is a fair floor for a model genuinely useful for coding, and you shouldn't spend all of it on weights: target 14 to 20GB and leave the rest for the KV cache, which fills fast once an agent starts accumulating tool calls and file contents. That budget runs something like Gemma 4 or Qwen3.8-27B, quantized to fit. Good models. Not the model you are used to.
+The rest of this section is hardware arithmetic; if you are not shopping for a machine, the short version is that it costs more than you think and the target keeps moving.
 
-Going past that gets expensive quickly. A Mac Studio or an NVIDIA DGX Spark with 128GB of unified memory runs $4,500 to $6,900. A top-tier open-weight model like Kimi K3 needs five to twelve of them, so $23,500 to $71,000, because all 2.8 trillion parameters have to sit in memory even though only 104 billion are active on any given token. Marketing quotes the active number; memory doesn't care. And a cluster that can hold a model that size is still likely too slow to enjoy using, because the link between consumer machines is nothing like the fabric inside a real server.
+Around 24GB of VRAM — the memory on the graphics card, which is where the model has to sit — is a fair floor for a model genuinely useful for coding, and you shouldn't spend all of it on weights: target 14 to 20GB and leave the rest for the KV cache, the running notes the model keeps on the conversation, which fills fast once an agent starts accumulating tool calls and file contents. That budget runs something like Gemma 4 or Qwen3.8-27B, quantized to fit. Good models. Not the model you are used to.
 
-Two costs people leave out. Power: a few active hours a day on a small rig runs near 180kWh a month, about $61 in California, and you pay it whether or not you used the machine that month. And obsolescence: a year ago the number for a top-tier model was four machines, correct at the time for Kimi K2 — K3 nearly tripled in size and the advice went stale without anyone announcing it. You are buying hardware against a target that moves every few months.
+Going past that gets expensive quickly. A Mac Studio or an NVIDIA DGX Spark with 128GB of unified memory runs $4,500 to $6,900. A top-tier open-weight model like Kimi K3 needs five to twelve of them, so roughly $23,000 to $83,000, because all 2.8 trillion parameters have to sit in memory even though only 104 billion are active on any given token. Marketing quotes the active number; memory doesn't care. And a cluster that can hold a model that size is still likely too slow to enjoy using, because the link between consumer machines is nothing like the wiring inside a real server.
+
+Two costs people leave out. Power: a few active hours a day on a small rig runs near 180kWh a month, about $61 in California — a recurring cost that never shows up on the sticker price. And obsolescence: a year ago the number for a top-tier model was four machines, correct at the time for Kimi K2 — K3 nearly tripled in size and the advice went stale without anyone announcing it. You are buying hardware against a target that moves every few months.
 
 Privacy is worth paying for. Just know what you are paying.
 
@@ -63,9 +65,9 @@ Before buying anything, run the model you are considering on the hardware you al
 
 ## API per token use vs. subscriptions
 
-Models are priced per input token and per output token (per million tokens, actually) for API usage, so they can be compared that way, but using the API is usually much more costly than using a subscription.
+Models are priced per input token and per output token (per million tokens, actually) for API usage — paying the provider directly, by the token, instead of buying a subscription — so they can be compared that way, but using the API is usually much more costly than using a subscription.
 
-Proprietary model providers as well as open-source cloud model providers offer subscriptions that include a variable and undisclosed amount of token usage per 'session' and per week. Sessions usually tend to be for a 5-hour block of time, and then there is a cap per week. Some subscriptions start with a very limited free tier, but the realistic entry point is around $20 a month: that is what both Claude Pro and ChatGPT Plus cost, and it may sometimes be equivalent to $100s in API token usage. The heavier tiers run $100 to $200 a month.
+Proprietary model providers as well as open-source cloud model providers offer subscriptions that include a variable and undisclosed amount of token usage per 'session' and per week. Sessions tend to be a 5-hour block of time, with a cap per week on top. Some subscriptions start with a very limited free tier, but the realistic entry point is around $20 a month: that is what both Claude Pro and ChatGPT Plus cost, and it may sometimes be worth hundreds of dollars of API token usage. The heavier tiers run $100 to $200 a month.
 
 Compare and contrast for yourself, but a subscription is usually the way to go.
 
@@ -78,7 +80,7 @@ Can I use OpenAI models with Claude Code? In theory, yes. In practice, it's best
 
 However, it's possible to use API access with any harness; the cost may not be worth it.
 
-Most open-source model providers don't have restrictions on what harness you use, so it's possible to use models like DeepSeek, Qwen, or Kimi using the Claude Code harness or Codex. This is set in the configuration — here's what that actually looks like for each harness, pointed at [Z.ai](https://z.ai) (Zhipu AI's) GLM models over its Anthropic-compatible endpoint.
+Most open-source model providers don't have restrictions on what harness you use, so it's possible to use models like DeepSeek, Qwen, or Kimi using the Claude Code harness or Codex. This is set in the configuration — here's what that actually looks like for each harness, pointed at the GLM models from [Z.ai](https://z.ai), the Chinese lab Zhipu AI, over its Anthropic-compatible endpoint. If you aren't going to wire up a third-party provider yourself, skip to "Useful plugins and skills" — nothing later on depends on this.
 
 <Tabs syncKey="harness">
 <TabItem label="Claude Code">
@@ -132,7 +134,7 @@ Then, in your shell — never in `config.toml` itself:
 export THIRD_PARTY_API_KEY=<your-api-key>
 ```
 
-`env_key` doesn't hold the key. It names an environment variable Codex reads the key from at runtime, so the real value never has to sit in a file, checked into git or not. Here's one of OpenAI's own worked examples, verbatim, for a real provider using this same shape:
+`env_key` doesn't hold the key. It names an environment variable — a named value your program reads from its surroundings instead of from its own code — that Codex reads the key from at runtime, so the real value never has to sit in a file, checked into git or not. Here's one of OpenAI's own worked examples, verbatim, for a real provider using this same shape:
 
 ```toml
 model_provider = "mistral"
@@ -143,7 +145,7 @@ base_url = "https://api.mistral.ai/v1"
 env_key = "MISTRAL_API_KEY"
 ```
 
-One catch: a custom provider's `wire_api` defaults to `"responses"`, and per OpenAI's own reference that is currently the only value it supports. The endpoint needs to speak OpenAI's newer Responses API shape, not just the older Chat Completions shape that a lot of "OpenAI-compatible" third-party APIs actually implement — check your provider's docs before assuming this will work for them.
+One catch: a custom provider's `wire_api` defaults to `"responses"`, and per OpenAI's own reference that is currently the only value it supports. The endpoint needs to speak OpenAI's newer Responses API shape, not just the older Chat Completions shape that a lot of "OpenAI-compatible" third-party APIs actually implement — check your provider's docs before assuming this will work.
 
 </TabItem>
 </Tabs>
@@ -187,8 +189,8 @@ Codex has its own plugin marketplace mechanism, with real working commands — b
 
 OpenAI's own equivalent lives at https://github.com/openai/plugins: an actively maintained repo under the `openai` GitHub org publishing exactly that catalog (marketplace name `openai-curated`), and the actual source for the curated directory built into the Codex app — OpenAI's own docs load the plugin browser's icons straight from this repo. Most of it is company connectors (Figma, Slack, Stripe, and the like), but two entries earn a place in an everyday coding setup:
 
-- `superpowers`: the same planning, TDD, and systematic-debugging skill set as the Claude Code plugin above, ported to Codex almost skill-for-skill. Install this one first.
-- `coderabbit`: AI code review from CodeRabbit, packaged as Codex skills that inspect your current diff and turn findings into follow-up fixes.
+- `superpowers`: the same planning, test-driven development, and systematic-debugging skill set as the Claude Code plugin above, ported to Codex almost skill-for-skill. Install this one first.
+- `coderabbit`: AI code review from CodeRabbit, packaged as Codex skills that inspect your current diff — the lines the agent has added, changed or deleted since your last checkpoint — and turn findings into follow-up fixes.
 
 There's no Codex plugin for session memory yet — nothing in the official marketplace does what `remember` does for Claude Code. That's a real gap in the ecosystem today, not an omission here.
 
@@ -215,7 +217,7 @@ A plugin bundles several skills at once; sometimes you just want one, from a rep
 <Tabs syncKey="harness">
 <TabItem label="Claude Code">
 
-Skills live at `.claude/skills/<skill-name>/SKILL.md`: inside a project to check into git and share with the team, or under `~/.claude/skills/<skill-name>/SKILL.md` on your own machine to load in every project you open. The file needs `name` and `description` frontmatter; everything after it is the instructions Claude reads once the task matches.
+Skills live at `.claude/skills/<skill-name>/SKILL.md`: inside a project to check into git and share with the team, or under `~/.claude/skills/<skill-name>/SKILL.md` on your own machine to load in every project you open. The file needs `name` and `description` in a short header block at the top; everything after it is the instructions Claude reads once the task matches.
 
 The Karpathy repo above ships exactly such a file, so grab it directly:
 
