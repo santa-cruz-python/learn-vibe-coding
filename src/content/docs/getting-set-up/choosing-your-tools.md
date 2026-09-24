@@ -23,43 +23,27 @@ Don't take that as a rule, though. Pricing varies by model and by the provider h
 
 ## Local models
 
-Everything above assumes you are renting a model from somebody. You don't have to. Open weights means you can download the model and run it on your own hardware, and there are real reasons to want that: your code never leaves the machine, there is no per-token bill, and nothing changes under you when a provider updates its pricing or its terms. If you work on code you are contractually not allowed to send to a third party, this isn't a preference, it's the only option.
+Everything above assumes you are renting a model from somebody. You don't have to: open weights means you can download the model and run it on your own hardware. Your code never leaves the machine, there is no per-token bill, and nothing changes under you when a provider updates its pricing or its terms. If you work on code you are contractually not allowed to send to a third party, that isn't a preference, it's the only option.
 
-It is also more expensive and more limited than it sounds.
+The catch is what it costs to get there.
 
-Around 24GB of VRAM is a fair floor for a model genuinely useful for coding, and you shouldn't spend all of it on weights: target 14 to 20GB and leave the rest for the KV cache. That matters more for agentic coding than for chat, because an agent accumulates a long history of tool calls, file contents and command output, and all of it lives in that cache. Size for the weights alone and you run out of room mid-task. At that budget you are running something like Gemma 4 (26B as a mixture-of-experts, or 31B dense) or Qwen3.8-27B. Good models. Not the model you are used to.
+Around 24GB of VRAM is a fair floor for a model genuinely useful for coding, and you shouldn't spend all of it on weights: target 14 to 20GB and leave the rest for the KV cache, which fills fast once an agent starts accumulating tool calls and file contents. That budget runs something like Gemma 4 or Qwen3.8-27B, quantized to fit. Good models. Not the model you are used to.
 
-To fit them you quantize: store the weights at lower precision so the file is smaller. "Slightly degraded" is an honest description at Q4 and above, where Q4_K_M costs roughly 2 to 3% pass@1 on coding benchmarks. Two caveats. The loss is not spread evenly: multi-step reasoning and code generation take the hit harder than conversation does, so it lands precisely on the work you bought the machine for. And below Q4, "slightly" stops being true. That is a cliff, not a slope.
+Going past that gets expensive quickly. A Mac Studio or an NVIDIA DGX Spark with 128GB of unified memory runs $4,500 to $6,900. A top-tier open-weight model like Kimi K3 needs five to twelve of them, so $23,500 to $71,000, because all 2.8 trillion parameters have to sit in memory even though only 104 billion are active on any given token. Marketing quotes the active number; memory doesn't care. And a cluster that can hold a model that size is still likely too slow to enjoy using, because the link between consumer machines is nothing like the fabric inside a real server.
+
+Two costs people leave out. Power: a few active hours a day on a small rig runs near 180kWh a month, about $61 in California, and you pay it whether or not you used the machine that month. And obsolescence: a year ago the number for a top-tier model was four machines, correct at the time for Kimi K2 — K3 nearly tripled in size and the advice went stale without anyone announcing it. You are buying hardware against a target that moves every few months.
+
+Privacy is worth paying for. Just know what you are paying.
 
 :::tip[Pro Tip]
-Before you buy hardware, run the model you are considering on the hardware you already have, against a real task in a real project rather than a chat prompt. Have it read a few files, run the tests and fix something. A local model that answers questions well can still fall apart on the tool-calling loop, and that loop is the part you will actually be using. An afternoon of this is cheaper than a $5,000 machine you end up not using.
+Before buying anything, run the model you are considering on the hardware you already have, against a real task in a real project rather than a chat prompt. A local model that answers questions well can still fall apart on the tool-calling loop, and that loop is what you will actually be using.
 :::
-
-A Mac Studio M5 Max with 128GB of unified memory runs from about $4,499 to $6,900 depending on storage and GPU, and the storage is not optional: weight files run to tens or hundreds of gigabytes each. NVIDIA's DGX Spark is about $4,699, also with 128GB. The name invites confusion: the Spark is a desktop machine, not a DGX in the sense the data center uses the word. An actual DGX server is a $300,000 to $500,000 piece of equipment. The Spark borrows the brand, not the class.
-
-Say you want the best open-weight model rather than the one that fits on your desk. That is currently Kimi K3: 2.8 trillion total parameters, 104 billion active, about 594GB of weights in native format and 1.51TB at a quantization you would actually want to use.
-
-Here is the most misread number in this whole conversation. All 2.8 trillion parameters have to be resident in memory, even though only 104 billion are active on any given token. Routing picks a different subset each time; it does not let you leave the rest on disk. Marketing quotes the active count, which makes these models sound far more approachable than they are.
-
-So on 128GB machines: five to hold it at all, twelve for a quantization worth using. Call it $23,500 to $71,000. That figure moves fast, too. The number people repeated a year ago was four machines, correct for Kimi K2. K3 nearly tripled in size and the advice went stale without anyone announcing it.
-
-What do you get for it? Kimi K3 is the strongest open-weight model available, and it ranks first on Arena's Frontend Code Arena, ahead of Claude Fable 5. Overall, though, it sits around ninth to seventeenth while the frontier models hold the top three: ahead on some specific boards, well behind on the whole.
-
-Power is the cost people forget to count. A DGX Spark pulls about 240W under load, a Mac Studio M5 Max about 200W. A few active hours a day across a small rig lands near 180kWh a month: about $61 in California at 33 to 45 cents per kWh, roughly half that at the US average of 18. Not ruinous, but it is a subscription you pay whether or not you used the machine that month.
-
-The strongest argument against a home cluster isn't the price, though. It is that capacity is not speed. Holding a model in memory and running it at a usable rate are different problems: mixture-of-experts routing sends activations between nodes on every single token, and the interconnect between consumer machines is far slower than the GPU-to-GPU fabric inside a real server. A cluster big enough to hold Kimi K3 will very likely still be too slow for a comfortable interactive coding loop, and an agentic loop makes many model calls per task, so slow compounds. You can spend $71,000 and end up with something you don't enjoy using.
-
-The remaining gap isn't where people assume, either. Not context length; plenty of open models ship 1M-token windows now. It is tool-calling reliability and success on long, multi-step tasks, and quantization degrades exactly that, so the two halves of this section compound rather than cancel. Which leaves an honest summary: local models are good enough for everyday work, the edits and fixes and questions about a codebase where privacy matters most and a 27B model at Q5 is plenty. The gap is on the hardest, longest agentic tasks, and it is real.
-
-Every number above is a September 2026 snapshot, and this area moves faster than anything else in this guide. Check the prices and model names yourself before acting on any of it.
 
 :::note[Resource Links]
 - Ollama, the simplest way to run a model locally: https://ollama.com
 - LM Studio, a desktop app with a model browser: https://lmstudio.ai
 - llama.cpp, the engine most of them are built on: https://github.com/ggml-org/llama.cpp
 - Open weights to download, with quantized builds: https://huggingface.co/models
-- Mac Studio: https://www.apple.com/mac-studio/
-- NVIDIA DGX Spark: https://www.nvidia.com/en-us/products/workstations/dgx-spark/
 :::
 
 ## API per token use vs. subscriptions
